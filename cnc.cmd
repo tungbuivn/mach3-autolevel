@@ -1,0 +1,1 @@
+node d:\0cnc\app\mod.js %1

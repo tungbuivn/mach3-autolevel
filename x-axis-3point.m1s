@@ -1,0 +1,91 @@
+toolDiameter=3.1
+thicknessTouchPad=19
+x1=3
+y1=2
+x2=6
+y2=7
+x3=4
+y3=2.5
+
+Begin Dialog ButtonSample 16,32,280,120,"Find origin"
+  Text 20,15,73,13, "(0.0000,0.0000)" 
+  PushButton 80, 10, 80, 16, "Moving X axis 1", .butx1
+  OptionGroup .xmov
+    OptionButton 170, 8, 100, 12, "Move to X+"
+    OptionButton 170, 18, 100, 12, "Move to X-" 
+  'CheckBox 170, 10, 200, 16, "Move from current to left", .ch1
+
+  PushButton 80, 30, 80, 16, "Moving X axis 2", .butx2
+  PushButton 80, 50, 80, 16, "Moving Y axis", .buty
+  OptionGroup .ymov
+    OptionButton 170, 48, 100, 12, "Move to Y+"
+    OptionButton 170, 58, 100, 12, "Move to Y-" 
+
+  TextBox 20,70,200,13, .inter
+
+  OKButton 20,90,40,14
+  CancelButton 70,90,40,14
+End Dialog
+
+Dim Dlg1 As ButtonSample
+button=1
+
+While button>0
+	Button = Dialog (Dlg1) 
+	Select Case Button
+	  Case 1
+	    
+	     
+
+	   
+	    ' send command get x axis
+         Case 2
+	    MsgBox "yyyyyyy"
+	    Case 3
+	    
+	End Select 
+ 	'MsgBox Button
+ 	dx1=x2-x1
+  dy1=y2-y1
+  dx2=-dy1
+  dy2=dx1
+
+  a1=dy1
+  b1=-dx1
+  c1=-dy1*x1+dx1*y1
+
+  a2=dy2
+  b2=-dx2
+  c2=-dy2*x3+dx2*y3
+
+    
+  x=(b1*c2-b2*c1)/(a1*b2-a2*b1)
+  y=(a2*c1-a1*c2)/(a1*b2-a2*b1)
+
+
+  dist= ((x3-x)*(x3-x)+(y3-y)*(y3-y)) ^ 0.5
+  nx=(x3-x)/dist
+  ny=(y3-y)/dist
+  norm=(toolDiameter/2+thicknessTouchPad)
+
+
+Select Case dlg1.xmov
+  Case 0
+    slx=nx*norm
+    sly=ny*norm
+
+    If dlg1.ymov=0 Then
+	' rotate left
+	rlx=-sly
+	rly=slx 
+    Else
+       ' rotate right
+       rlx=sly
+       rly=-slx
+    End If
+End Select
+ix=(x+rlx+slx)
+iy=(y+rly+sly)
+
+dlg1.inter= ix & "," & iy
+Wend   
