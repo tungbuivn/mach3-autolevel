@@ -36,6 +36,7 @@ function applyTpl(){
     var bottomLayer=get("BottomLayer");
     var drill=get("_PTH");
 return `
+set_sys units in
 new
 open_gerber ${boardOutline} -outname cutout
 open_gerber ${bottomLayer} -outname bottom_layer
