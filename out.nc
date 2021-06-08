@@ -1,6 +1,6 @@
 (Z200)
 (T5  D=3. CR=0. - ZMIN=-20. - FLAT END MILL)
-F600
+Fnull
 G90 G94 G91.1 G40 G49 G17
 G21
 (WHEN USING FUSION 360 FOR PERSONAL USE, THE FEEDRATE OF)
@@ -17,703 +17,703 @@ G0 X0. Y201.5
 G43 Z5. H5
 G1 Z1.2 F100.
 G1 Z-0.2 F100
-F600
+Fnull
 X81.
 G0 Z5
-F600
+Fnull
 G0 X0.
 G1 Z1. F100
 G1 Z-0.4 F100
-F600
+Fnull
 X81.
 G0 Z5
-F600
+Fnull
 G0 X0.
 Z0.8
 G1 Z-0.6 F100
-F600
+Fnull
 X81.
 G0 Z5
-F600
+Fnull
 G0 X0.
 Z0.6
 G1 Z-0.8 F100
-F600
+Fnull
 X81.
 G0 Z5
-F600
+Fnull
 G0 X0.
 Z0.4
 G1 Z-1. F100
-F600
+Fnull
 X81.
 G0 Z5
-F600
+Fnull
 G0 X0.
 Z0.2
 G1 Z-1.2 F100
-F600
+Fnull
 X81.
 G0 Z5
-F600
+Fnull
 G0 X0.
 Z0.
 G1 Z-1.4 F100
-F600
+Fnull
 X81.
 G0 Z5
-F600
+Fnull
 G0 X0.
 Z-0.2
 G1 Z-1.6 F100
-F600
+Fnull
 X81.
 G0 Z5
-F600
+Fnull
 G0 X0.
 Z-0.4
 G1 Z-1.8 F100
-F600
+Fnull
 X81.
 G0 Z5
-F600
+Fnull
 G0 X0.
 Z-0.6
 G1 Z-2. F100
-F600
+Fnull
 X81.
 G0 Z5
-F600
+Fnull
 G0 X0.
 Z-0.8
 G1 Z-2.2 F100
-F600
+Fnull
 X81.
 G0 Z5
-F600
+Fnull
 G0 X0.
 Z-1.
 G1 Z-2.4 F100
-F600
+Fnull
 X81.
 G0 Z5
-F600
+Fnull
 G0 X0.
 Z-1.2
 G1 Z-2.6 F100
-F600
+Fnull
 X81.
 G0 Z5
-F600
+Fnull
 G0 X0.
 Z-1.4
 G1 Z-2.8 F100
-F600
+Fnull
 X81.
 G0 Z5
-F600
+Fnull
 G0 X0.
 Z-1.6
 G1 Z-3. F100
-F600
+Fnull
 X81.
 G0 Z5
-F600
+Fnull
 G0 X0.
 Z-1.8
 G1 Z-3.2 F100
-F600
+Fnull
 X81.
 G0 Z5
-F600
+Fnull
 G0 X0.
 Z-2.
 G1 Z-3.4 F100
-F600
+Fnull
 X81.
 G0 Z5
-F600
+Fnull
 G0 X0.
 Z-2.2
 G1 Z-3.6 F100
-F600
+Fnull
 X81.
 G0 Z5
-F600
+Fnull
 G0 X0.
 Z-2.4
 G1 Z-3.8 F100
-F600
+Fnull
 X81.
 G0 Z5
-F600
+Fnull
 G0 X0.
 Z-2.6
 G1 Z-4. F100
-F600
+Fnull
 X81.
 G0 Z5
-F600
+Fnull
 G0 X0.
 Z-2.8
 G1 Z-4.2 F100
-F600
+Fnull
 X81.
 G0 Z5
-F600
+Fnull
 G0 X0.
 Z-3.
 G1 Z-4.4 F100
-F600
+Fnull
 X81.
 G0 Z5
-F600
+Fnull
 G0 X0.
 Z-3.2
 G1 Z-4.6 F100
-F600
+Fnull
 X81.
 G0 Z5
-F600
+Fnull
 G0 X0.
 Z-3.4
 G1 Z-4.8 F100
-F600
+Fnull
 X81.
 G0 Z5
-F600
+Fnull
 G0 X0.
 Z-3.6
 G1 Z-5. F100
-F600
+Fnull
 X81.
 G0 Z5
-F600
+Fnull
 G0 X0.
 Z-3.8
 G1 Z-5.2 F100
-F600
+Fnull
 X81.
 G0 Z5
-F600
+Fnull
 G0 X0.
 Z-4.
 G1 Z-5.4 F100
-F600
+Fnull
 X81.
 G0 Z5
-F600
+Fnull
 G0 X0.
 Z-4.2
 G1 Z-5.6 F100
-F600
+Fnull
 X81.
 G0 Z5
-F600
+Fnull
 G0 X0.
 Z-4.4
 G1 Z-5.8 F100
-F600
+Fnull
 X81.
 G0 Z5
-F600
+Fnull
 G0 X0.
 Z-4.6
 G1 Z-6. F100
-F600
+Fnull
 X81.
 G0 Z5
-F600
+Fnull
 G0 X0.
 Z-4.8
 G1 Z-6.2 F100
-F600
+Fnull
 X81.
 G0 Z5
-F600
+Fnull
 G0 X0.
 Z-5.
 G1 Z-6.4 F100
-F600
+Fnull
 X81.
 G0 Z5
-F600
+Fnull
 G0 X0.
 Z-5.2
 G1 Z-6.6 F100
-F600
+Fnull
 X81.
 G0 Z5
-F600
+Fnull
 G0 X0.
 Z-5.4
 G1 Z-6.8 F100
-F600
+Fnull
 X81.
 G0 Z5
-F600
+Fnull
 G0 X0.
 Z-5.6
 G1 Z-7. F100
-F600
+Fnull
 X81.
 G0 Z5
-F600
+Fnull
 G0 X0.
 Z-5.8
 G1 Z-7.2 F100
-F600
+Fnull
 X81.
 G0 Z5
-F600
+Fnull
 G0 X0.
 Z-6.
 G1 Z-7.4 F100
-F600
+Fnull
 X81.
 G0 Z5
-F600
+Fnull
 G0 X0.
 Z-6.2
 G1 Z-7.6 F100
-F600
+Fnull
 X81.
 G0 Z5
-F600
+Fnull
 G0 X0.
 Z-6.4
 G1 Z-7.8 F100
-F600
+Fnull
 X81.
 G0 Z5
-F600
+Fnull
 G0 X0.
 Z-6.6
 G1 Z-8. F100
-F600
+Fnull
 X81.
 G0 Z5
-F600
+Fnull
 G0 X0.
 Z-6.8
 G1 Z-8.2 F100
-F600
+Fnull
 X81.
 G0 Z5
-F600
+Fnull
 G0 X0.
 Z-7.
 G1 Z-8.4 F100
-F600
+Fnull
 X81.
 G0 Z5
-F600
+Fnull
 G0 X0.
 Z-7.2
 G1 Z-8.6 F100
-F600
+Fnull
 X81.
 G0 Z5
-F600
+Fnull
 G0 X0.
 Z-7.4
 G1 Z-8.8 F100
-F600
+Fnull
 X81.
 G0 Z5
-F600
+Fnull
 G0 X0.
 Z-7.6
 G1 Z-9. F100
-F600
+Fnull
 X81.
 G0 Z5
-F600
+Fnull
 G0 X0.
 Z-7.8
 G1 Z-9.2 F100
-F600
+Fnull
 X81.
 G0 Z5
-F600
+Fnull
 G0 X0.
 Z-8.
 G1 Z-9.4 F100
-F600
+Fnull
 X81.
 G0 Z5
-F600
+Fnull
 G0 X0.
 Z-8.2
 G1 Z-9.6 F100
-F600
+Fnull
 X81.
 G0 Z5
-F600
+Fnull
 G0 X0.
 Z-8.4
 G1 Z-9.8 F100
-F600
+Fnull
 X81.
 G0 Z5
-F600
+Fnull
 G0 X0.
 Z-8.6
 G1 Z-10. F100
-F600
+Fnull
 X81.
 G0 Z5
-F600
+Fnull
 G0 X0.
 Z-8.8
 G1 Z-10.2 F100
-F600
+Fnull
 X81.
 G0 Z5
-F600
+Fnull
 G0 X0.
 Z-9.
 G1 Z-10.4 F100
-F600
+Fnull
 X81.
 G0 Z5
-F600
+Fnull
 G0 X0.
 Z-9.2
 G1 Z-10.6 F100
-F600
+Fnull
 X81.
 G0 Z5
-F600
+Fnull
 G0 X0.
 Z-9.4
 G1 Z-10.8 F100
-F600
+Fnull
 X81.
 G0 Z5
-F600
+Fnull
 G0 X0.
 Z-9.6
 G1 Z-11. F100
-F600
+Fnull
 X81.
 G0 Z5
-F600
+Fnull
 G0 X0.
 Z-9.8
 G1 Z-11.2 F100
-F600
+Fnull
 X81.
 G0 Z5
-F600
+Fnull
 G0 X0.
 Z-10.
 G1 Z-11.4 F100
-F600
+Fnull
 X81.
 G0 Z5
-F600
+Fnull
 G0 X0.
 Z-10.2
 G1 Z-11.6 F100
-F600
+Fnull
 X81.
 G0 Z5
-F600
+Fnull
 G0 X0.
 Z-10.4
 G1 Z-11.8 F100
-F600
+Fnull
 X81.
 G0 Z5
-F600
+Fnull
 G0 X0.
 Z-10.6
 G1 Z-12. F100
-F600
+Fnull
 X81.
 G0 Z5
-F600
+Fnull
 G0 X0.
 Z-10.8
 G1 Z-12.2 F100
-F600
+Fnull
 X81.
 G0 Z5
-F600
+Fnull
 G0 X0.
 Z-11.
 G1 Z-12.4 F100
-F600
+Fnull
 X81.
 G0 Z5
-F600
+Fnull
 G0 X0.
 Z-11.2
 G1 Z-12.6 F100
-F600
+Fnull
 X81.
 G0 Z5
-F600
+Fnull
 G0 X0.
 Z-11.4
 G1 Z-12.8 F100
-F600
+Fnull
 X81.
 G0 Z5
-F600
+Fnull
 G0 X0.
 Z-11.6
 G1 Z-13. F100
-F600
+Fnull
 X81.
 G0 Z5
-F600
+Fnull
 G0 X0.
 Z-11.8
 G1 Z-13.2 F100
-F600
+Fnull
 X81.
 G0 Z5
-F600
+Fnull
 G0 X0.
 Z-12.
 G1 Z-13.4 F100
-F600
+Fnull
 X81.
 G0 Z5
-F600
+Fnull
 G0 X0.
 Z-12.2
 G1 Z-13.6 F100
-F600
+Fnull
 X81.
 G0 Z5
-F600
+Fnull
 G0 X0.
 Z-12.4
 G1 Z-13.8 F100
-F600
+Fnull
 X81.
 G0 Z5
-F600
+Fnull
 G0 X0.
 Z-12.6
 G1 Z-14. F100
-F600
+Fnull
 X81.
 G0 Z5
-F600
+Fnull
 G0 X0.
 Z-12.8
 G1 Z-14.2 F100
-F600
+Fnull
 X81.
 G0 Z5
-F600
+Fnull
 G0 X0.
 Z-13.
 G1 Z-14.4 F100
-F600
+Fnull
 X81.
 G0 Z5
-F600
+Fnull
 G0 X0.
 Z-13.2
 G1 Z-14.6 F100
-F600
+Fnull
 X81.
 G0 Z5
-F600
+Fnull
 G0 X0.
 Z-13.4
 G1 Z-14.8 F100
-F600
+Fnull
 X81.
 G0 Z5
-F600
+Fnull
 G0 X0.
 Z-13.6
 G1 Z-15. F100
-F600
+Fnull
 X81.
 G0 Z5
-F600
+Fnull
 G0 X0.
 Z-13.8
 G1 Z-15.2 F100
-F600
+Fnull
 X81.
 G0 Z5
-F600
+Fnull
 G0 X0.
 Z-14.
 G1 Z-15.4 F100
-F600
+Fnull
 X81.
 G0 Z5
-F600
+Fnull
 G0 X0.
 Z-14.2
 G1 Z-15.6 F100
-F600
+Fnull
 X81.
 G0 Z5
-F600
+Fnull
 G0 X0.
 Z-14.4
 G1 Z-15.8 F100
-F600
+Fnull
 X81.
 G0 Z5
-F600
+Fnull
 G0 X0.
 Z-14.6
 G1 Z-16. F100
-F600
+Fnull
 X81.
 G0 Z5
-F600
+Fnull
 G0 X0.
 Z-14.8
 G1 Z-16.2 F100
-F600
+Fnull
 X81.
 G0 Z5
-F600
+Fnull
 G0 X0.
 Z-15.
 G1 Z-16.4 F100
-F600
+Fnull
 X81.
 G0 Z5
-F600
+Fnull
 G0 X0.
 Z-15.2
 G1 Z-16.6 F100
-F600
+Fnull
 X81.
 G0 Z5
-F600
+Fnull
 G0 X0.
 Z-15.4
 G1 Z-16.8 F100
-F600
+Fnull
 X81.
 G0 Z5
-F600
+Fnull
 G0 X0.
 Z-15.6
 G1 Z-17. F100
-F600
+Fnull
 X81.
 G0 Z5
-F600
+Fnull
 G0 X0.
 Z-15.8
 G1 Z-17.2 F100
-F600
+Fnull
 X81.
 G0 Z5
-F600
+Fnull
 G0 X0.
 Z-16.
 G1 Z-17.4 F100
-F600
+Fnull
 X81.
 G0 Z5
-F600
+Fnull
 G0 X0.
 Z-16.2
 G1 Z-17.6 F100
-F600
+Fnull
 X81.
 G0 Z5
-F600
+Fnull
 G0 X0.
 Z-16.4
 G1 Z-17.8 F100
-F600
+Fnull
 X81.
 G0 Z5
-F600
+Fnull
 G0 X0.
 Z-16.6
 G1 Z-18. F100
-F600
+Fnull
 X81.
 G0 Z5
-F600
+Fnull
 G0 X0.
 Z-16.8
 G1 Z-18.2 F100
-F600
+Fnull
 X81.
 G0 Z5
-F600
+Fnull
 G0 X0.
 Z-17.
 G1 Z-18.4 F100
-F600
+Fnull
 X81.
 G0 Z5
-F600
+Fnull
 G0 X0.
 Z-17.2
 G1 Z-18.6 F100
-F600
+Fnull
 X81.
 G0 Z5
-F600
+Fnull
 G0 X0.
 Z-17.4
 G1 Z-18.8 F100
-F600
+Fnull
 X81.
 G0 Z5
-F600
+Fnull
 G0 X0.
 Z-17.6
 G1 Z-19. F100
-F600
+Fnull
 X81.
 G0 Z5
-F600
+Fnull
 G0 X0.
 Z-17.8
 G1 Z-19.2 F100
-F600
+Fnull
 X81.
 G0 Z5
-F600
+Fnull
 G0 X0.
 Z-18.
 G1 Z-19.4 F100
-F600
+Fnull
 X81.
 G0 Z5
-F600
+Fnull
 G0 X0.
 Z-18.2
 G1 Z-19.6 F100
-F600
+Fnull
 X81.
 G0 Z5
-F600
+Fnull
 G0 X0.
 Z-18.4
 G1 Z-19.8 F100
-F600
+Fnull
 X81.
 G0 Z5
-F600
+Fnull
 G0 X0.
 Z-18.6
 G1 Z-20. F100
-F600
+Fnull
 X81.
 G0 Z5
-F600
+Fnull
 
 M30
 

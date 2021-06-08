@@ -1,1 +1,0 @@
-node d:\0cnc\app\ger.js 

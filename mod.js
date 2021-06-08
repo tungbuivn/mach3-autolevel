@@ -15,9 +15,17 @@ var maxHeight=org
 ;
 // maxHeight=5;
 var feedRate=100;
-var cutXYFeedRate=300;
+var cutXYFeedRate=500;
 console.log("Initialize height:",maxHeight)
 org.push("");
+for (var frate of org) {
+    if (frate.match(/\(/)) continue;
+    if (frate.match(/\sF/)) {
+        cutXYFeedRate=frate.match(/\sF\d+/)[0].match(/\d+/)[0];
+        console.log("Feed rate: ",cutXYFeedRate,frate);
+        break;
+    }
+}
 var newArr=org.map((s,idx)=>{
     s=s.replace(/\r/,"");
 var z5=false;

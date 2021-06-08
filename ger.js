@@ -6,7 +6,7 @@ const drillFeedRate=50
 const drillDepth=-1.8
 
 const bottomLayerFeedRate=100
-const bottomLayerToolDiameter=0.5
+const bottomLayerToolDiameter=0.3
 
 const cutoutDepth=-2;
 const cutoutDepthPerpass=0.5;
@@ -41,7 +41,7 @@ new
 open_gerber ${boardOutline} -outname cutout
 open_gerber ${bottomLayer} -outname bottom_layer
 mirror bottom_layer -axis Y -box cutout
-isolate bottom_layer -dia ${bottomLayerToolDiameter} -overlap 0.1 -passes 2 -combine 1 -outname bottom_layer_iso
+isolate bottom_layer -dia ${bottomLayerToolDiameter} -overlap ${bottomLayerToolDiameter/3} -passes 2 -combine 1 -outname bottom_layer_iso
 cncjob bottom_layer_iso -z_cut -0.1 -z_move ${zSafe} -feedrate ${bottomLayerFeedRate} -tooldia ${bottomLayerToolDiameter} -spindlespeed ${spindleSpeed} -multidepth false -depthperpass 0.1 -outname bottom_layer_cnc
 write_gcode bottom_layer_cnc ${dir}/bottom_layer.cnc
 #> [-box <nameOfBox> | -dist <number>]
@@ -65,6 +65,11 @@ geocutout cutout_iso_exterior -dia ${cutoutToolDiameter} -gapsize 0.15 -gaps 4
 cncjob cutout_iso_exterior -z_cut ${cutoutDepth} -z_move ${zSafe} -feedrate ${cutoutFeedRate} -tooldia ${cutoutToolDiameter} -spindlespeed ${spindleSpeed} -multidepth true -depthperpass ${cutoutDepthPerpass} -outname cutout_cnc
 #cncjob <str> [-z_cut <float>] [-z_move <float>] [-feedrate <float>] [-tooldia <float>] [-spindlespeed <int>] [-multidepth <bool>] [-depthperpass <float>] [-outname <str>]
 write_gcode cutout_cnc ${dir}/cutout.cnc
+
+#merge all geometry to autoleveller
+#join_geometries all bottom_layer_iso drill cutout_iso_exterior 
+#cncjob all -z_cut ${cutoutDepth} -z_move ${zSafe} -feedrate ${cutoutFeedRate} -tooldia ${cutoutToolDiameter} -spindlespeed ${spindleSpeed} -multidepth true -depthperpass ${cutoutDepthPerpass} -outname all_cnc
+#write_gcode all_cnc ${dir}/all.cnc
 `
 }
 var outScript=`${dir}/script.txt`;
