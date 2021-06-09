@@ -1,4 +1,6 @@
 var delaunay = require("faster-delaunay");
+var pointInPolygon = require("point-in-polygon");
+var intersects = require("./intersects");
 var fs = require("fs");
 function extractPoint(s) {
   var p = s.match(/(x|y|z)([+-]?.*)/i);
@@ -63,4 +65,28 @@ function loadGCode(file) {
   return arr;
 }
 
-loadGCode("./top.nc");
+var data = loadGCode("./top.nc");
+var dn = delaunay(
+  data.map((o) => {
+    return [o.X, o.Y, o.Z, o];
+  })
+);
+var faces = dn.triangulate();
+var groups = {};
+faces.forEach((o, i) => {
+  var idx = (i / 3) >> 0;
+  groups[idx] = groups[idx] || [];
+  groups[idx].push(o);
+});
+var points = Object.keys(groups).map((key) => {
+  return groups[key].map((o) => o[3]);
+});
+var polygon = [
+  [0, 0],
+  [1, 0],
+  [Math.sqrt(2), Math.sqrt(2)],
+];
+var x = pointInPolygon([1, 0], polygon);
+console.log(x); // true
+
+console.log(faces);
