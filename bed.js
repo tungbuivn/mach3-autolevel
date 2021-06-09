@@ -1,6 +1,6 @@
 var delaunay = require("faster-delaunay");
 var pointInPolygon = require("point-in-polygon");
-var intersects = require("./intersects");
+var intersects = require("intersects");
 var fs = require("fs");
 function extractPoint(s) {
   var p = s.match(/(x|y|z)([+-]?.*)/i);
@@ -84,9 +84,24 @@ var points = Object.keys(groups).map((key) => {
 var polygon = [
   [0, 0],
   [1, 0],
-  [Math.sqrt(2), Math.sqrt(2)],
+  [1, 1],
+  [0, 0],
 ];
+function lineToLine(x1, y1, x2, y2, x3, y3, x4, y4) {
+  var s1_x = x2 - x1;
+  var s1_y = y2 - y1;
+  var s2_x = x4 - x3;
+  var s2_y = y4 - y3;
+  var s = (-s1_y * (x1 - x3) + s1_x * (y1 - y3)) / (-s2_x * s1_y + s1_x * s2_y);
+  var t = (s2_x * (y1 - y3) - s2_y * (x1 - x3)) / (-s2_x * s1_y + s1_x * s2_y);
+  return {
+    inter: s >= 0 && s <= 1 && t >= 0 && t <= 1,
+    x: x1 + s1_x * t,
+    y: y1 + s1_y * t,
+  };
+}
+var it = lineToLine(-1, 0.2, 1.5, 0.2, 5, 0, 7, 1);
 var x = pointInPolygon([1, 0], polygon);
-console.log(x); // true
+console.log(x, it); // true
 
 console.log(faces);
