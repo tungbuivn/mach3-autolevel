@@ -8,5 +8,15 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "faster-delaunay": "^1.0.0",
+    "intersects": "^2.7.2",
+    "point-in-polygon": "^1.1.0"
+  },
+  "devDependencies": {
+    "docs": "^0.3.2-canary.0",
+    "eslint": "^7.28.0",
+    "prettier": "^2.3.1"
+  }
 }
