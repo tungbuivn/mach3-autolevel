@@ -6,7 +6,7 @@ const drillFeedRate=50
 const drillDepth=-1.8
 
 const bottomLayerFeedRate=100
-const bottomLayerToolDiameter=0.3
+const bottomLayerToolDiameter=0.2
 
 const cutoutDepth=-2;
 const cutoutDepthPerpass=0.5;
@@ -50,7 +50,7 @@ write_gcode bottom_layer_cnc ${dir}/bottom_layer.cnc
 # drill holes
 open_excellon ${drill} -outname drill
 mirror drill -axis Y -box cutout
-drillcncjob drill -drillz ${drillDepth} -travelz ${zSafe} -feedrate ${drillFeedRate} -spindlespeed ${spindleSpeed} -outname drill_cnc
+drillcncjob drill -drillz ${drillDepth} -travelz 2 -feedrate ${drillFeedRate} -spindlespeed ${spindleSpeed} -outname drill_cnc
 write_gcode drill_cnc ${dir}/drill.cnc
 #[-tools <str>] [-drillz <float>] [-travelz <float>] [-feedrate <float>] [-spindlespeed <int>] [-toolchange <bool>] [-outname <str>]
 
