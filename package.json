@@ -10,9 +10,15 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@jingwood/graphics-math": "^1.1.18",
     "faster-delaunay": "^1.0.0",
     "intersects": "^2.7.2",
     "point-in-polygon": "^1.1.0"
+  },
+  "bin": {
+    "ger": "./ger.js",
+    "mod": "./mod.js",
+    "fixout": "./fixout.js"
   },
   "devDependencies": {
     "docs": "^0.3.2-canary.0",

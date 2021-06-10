@@ -1,6 +1,7 @@
 var delaunay = require("faster-delaunay");
 var pointInPolygon = require("point-in-polygon");
 var intersects = require("intersects");
+
 var fs = require("fs");
 function extractPoint(s) {
   var p = s.match(/(x|y|z)([+-]?.*)/i);
@@ -72,21 +73,15 @@ var dn = delaunay(
   })
 );
 var faces = dn.triangulate();
-var groups = {};
-faces.forEach((o, i) => {
-  var idx = (i / 3) >> 0;
-  groups[idx] = groups[idx] || [];
-  groups[idx].push(o);
-});
-var points = Object.keys(groups).map((key) => {
-  return groups[key].map((o) => o[3]);
-});
-var polygon = [
-  [0, 0],
-  [1, 0],
-  [1, 1],
-  [0, 0],
-];
+
+var points = faces.reduce((a, b, i) => {
+  var idt = (i / 3) >> 0;
+  a[idt] = a[idt] || [];
+  a[idt].push(b);
+
+  return a;
+}, []);
+
 function lineToLine(x1, y1, x2, y2, x3, y3, x4, y4) {
   var s1_x = x2 - x1;
   var s1_y = y2 - y1;
@@ -95,13 +90,62 @@ function lineToLine(x1, y1, x2, y2, x3, y3, x4, y4) {
   var s = (-s1_y * (x1 - x3) + s1_x * (y1 - y3)) / (-s2_x * s1_y + s1_x * s2_y);
   var t = (s2_x * (y1 - y3) - s2_y * (x1 - x3)) / (-s2_x * s1_y + s1_x * s2_y);
   return {
-    inter: s >= 0 && s <= 1 && t >= 0 && t <= 1,
+    inter: s > 0 && s < 1 && t > 0 && t < 1,
+    s: s,
+    t: t,
     x: x1 + s1_x * t,
     y: y1 + s1_y * t,
   };
 }
-var it = lineToLine(-1, 0.2, 1.5, 0.2, 5, 0, 7, 1);
-var x = pointInPolygon([1, 0], polygon);
-console.log(x, it); // true
+function interSeg(a, b, c, d) {
+  var rs = lineToLine(a.x, a.y, b.x, b.y, c.x, c.y, d.x, d.y);
+  if (rs.inter) {
+    var p = { x: rs.x, y: rs.y, mid: true };
+    return [
+      [a, p],
+      [p, b],
+    ];
+  }
+  return [[a, b]];
+}
+
+function splitSegment(a, b, ...lines) {
+  // rsx,y
+  var sources = [a, b];
+  var i = 0;
+  label_repeat: while (i <= sources.length - 2) {
+    var idx = i;
+    var p3 = sources[idx];
+    var p4 = sources[idx + 1];
+    for (var p of lines) {
+      var c = p[0];
+      var d = p[1];
+      var ri = interSeg(p3, p4, c, d);
+      if (ri.length > 1) {
+        var p1 = sources.slice(0, idx + 1);
+        var p2 = sources.slice(idx + 1);
+
+        sources = p1.concat(ri[0][1], p2);
+        i = -1;
+        break;
+      }
+    }
+    i++;
+  }
+  return sources;
+}
+
+var spl = splitSegment(
+  { x: -1, y: 0.5, start: true },
+  { x: 0.7, y: 0.5, end: true },
+  [
+    { x: 0, y: 0 },
+    { x: 0, y: 5 },
+  ],
+  [
+    { x: 1, y: 0 },
+    { x: 1, y: 5 },
+  ]
+);
 
 console.log(faces);

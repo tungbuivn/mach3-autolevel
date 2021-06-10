@@ -1,5 +1,6 @@
 {
   "dantri": 1,
+  "terminal.integrated.rendererType": "dom",
   "editor.formatOnSave": true,
   "files.exclude": {
     "**/.git": true,
