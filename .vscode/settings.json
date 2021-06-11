@@ -12,6 +12,7 @@
     "**/obj": true,
     "**/bundle": true,
     "**/pre-build": true,
+
     "Wss.Baomoi.LoadTest": true,
     "Wss.Baomoi.DataConverter": true,
     "Wss.Baomoi.DataDemo": true,
@@ -35,6 +36,11 @@
     "Wss.Baomoi.ServiceDataAccessTests": true,
     "Wss.Baomoi.RedisDataAccessTests": true,
     "Wss.Baomoi.QueueDataAccessTests": true
+  },
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/bower_components": true,
+    "**/*.code-search": true
   },
   "explorerExclude.backup": null
 }

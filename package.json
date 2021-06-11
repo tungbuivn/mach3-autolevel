@@ -11,6 +11,7 @@
   "license": "ISC",
   "dependencies": {
     "@jingwood/graphics-math": "^1.1.18",
+    "bottlejs": "^2.0.0",
     "faster-delaunay": "^1.0.0",
     "intersects": "^2.7.2",
     "point-in-polygon": "^1.1.0"

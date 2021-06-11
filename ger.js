@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+var container = require("./init");
 // define constant
 const zSafe = 5;
 
@@ -19,10 +20,34 @@ const spindleSpeed = 12000;
 var fs = require("fs");
 var path = require("path");
 var spawn = require("child_process").spawn;
+const hole = require("./hole");
 var dir = process.cwd().replace(/\\/g, "/");
 var fileList = fs.readdirSync(dir).filter((e) => {
   return e.match(/(_PTH\.DRL|BoardOutline\.GKO|BottomLayer\.GBL)$/gi);
 });
+var holeList = fileList
+  .filter((o) => o.match(/_PTH\.DRL/i))
+  .map((f) => {
+    var ct = fs.readFileSync(f) + "";
+    return ct
+      .replace(/(?:\\[rn]|[\r\n]+)+/g, String.fromCharCode(0))
+      .split(String.fromCharCode(0))
+      .filter((s) => s.match(/^;Holesize/i))
+      .map((o) => {
+        var it = o.split("=");
+        var id = it[0].match(/\d+/)[0];
+        var size = it[1].trim().split(/\s+/);
+        return {
+          id,
+          size: parseFloat(size[0]),
+        };
+      });
+  });
+var drillList = holeList.filter((o) => o.size < 1.0);
+var millingList = holeList.filter((o) => drillList.indexOf(0) == -1);
+// container.hole.splitHoles(fileList.filter((o) => o.match(/_PTH\.DRL/i))[0]);
+// require("./hole")(fileList.filter((o) => o.match(/_PTH\.DRL/i))[0]);
+// process.exit(-1);
 function get(name) {
   var re = new RegExp(name, "gi");
   var fn = fileList.filter((e) => e.match(re))[0];
@@ -46,19 +71,11 @@ cncjob bottom_layer_iso -z_cut -0.1 -z_move ${zSafe} -feedrate ${bottomLayerFeed
 write_gcode bottom_layer_cnc ${dir}/bottom_layer.cnc
 #> [-box <nameOfBox> | -dist <number>]
 
-
-# drill holes
-open_excellon ${drill} -outname drill
-mirror drill -axis Y -box cutout
-drillcncjob drill -drillz ${drillDepth} -travelz 2 -feedrate ${drillFeedRate} -spindlespeed ${spindleSpeed} -outname drill_cnc
-write_gcode drill_cnc ${dir}/drill.cnc
-#[-tools <str>] [-drillz <float>] [-travelz <float>] [-feedrate <float>] [-spindlespeed <int>] [-toolchange <bool>] [-outname <str>]
-
+${container.hole.splitHoles(fileList.filter((o) => o.match(/_PTH\.DRL/i))[0])}
 
 #cut board
 
 isolate cutout -dia ${cutoutToolDiameter} -overlap 0.1 -combine 0 -outname cutout_iso
-#delete cutout_iso2
 exteriors cutout_iso -outname cutout_iso_exterior
 delete cutout_iso
 geocutout cutout_iso_exterior -dia ${cutoutToolDiameter} -gapsize 0.15 -gaps 4 

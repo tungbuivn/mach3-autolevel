@@ -1,19 +1,25 @@
 {
-    // Use IntelliSense to learn about possible attributes.
-    // Hover to view descriptions of existing attributes.
-    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
-    "version": "0.2.0",
-    "configurations": [
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Launch GER",
+      "program": "${workspaceFolder}/ger.js",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/../Gerber_PCB_sensor_2021-06-07",
+      "skipFiles": ["<node_internals>/**"],
+      "type": "node"
+    },
 
-        {
-            "type": "node",
-            "request": "launch",
-            "name": "Launch Program",
-            "skipFiles": [
-                "<node_internals>/**"
-            ],
-            "program": "${workspaceFolder}\\mod.js",
-            "args": ["D:/0cnc/app/z200.tap"]
-        }
-    ]
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Launch Program",
+      "skipFiles": ["<node_internals>/**"],
+      "program": "${workspaceFolder}\\mod.js",
+      "args": ["D:/0cnc/app/z200.tap"]
+    }
+  ]
 }

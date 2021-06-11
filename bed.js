@@ -65,7 +65,70 @@ function loadGCode(file) {
     });
   return arr;
 }
+function loadRpfFile(fname) {
+  var s = fs.readFileSync(fname) + "";
+  var xyz = ["X", "Y", "Z"];
+  return s
+    .replace(/(?:\\[rn]|[\r\n]+)+/g, String.fromCharCode(0))
+    .split(String.fromCharCode(0))
+    .map((o) => {
+      return o
+        .split(",")
+        .map((o) => parseFloat(o))
+        .reduce((a, b, i) => {
+          a[xyz[i]] = b;
+          return a;
+        }, {});
+    });
+}
+var rpfData = loadRpfFile(
+  "c:/node-projects/Gerber_PCB_sensor_2021-06-07/rpf.rpf"
+);
+var rpfFace = delaunay(rpfData.map((o) => [o.X, o.Y, o.Z]))
+  .triangulate()
+  .reduce((a, b, i) => {
+    var idt = (i / 3) >> 0;
+    a[idt] = a[idt] || [];
+    a[idt].push(b);
 
+    return a;
+  }, []);
+
+var gcode = rpfFace
+  .map((o) => {
+    var [p1, p2, p3] = o;
+    return `
+G0 Z5
+G01 Z-0.1
+G01 X${p1[0]} Y${p1[1]}
+G01 X${p2[0]} Y${p2[1]}
+G01 X${p3[0]} Y${p3[1]}
+G01 Z0
+G00 Z5
+  `;
+  })
+
+  .join("\n");
+fs.writeFileSync(
+  "./grid.cnc",
+  `
+G21
+G90
+G94
+F600.00
+G00 Z5.0000
+M03 S12000
+G4 P1
+  
+G00 X${rpfFace[0][0][0]}Y${rpfFace[0][0][1]}
+
+${gcode}
+G00 Z5.0000
+G00 Z5.0000
+
+M05
+`
+);
 var data = loadGCode("./top.nc");
 var dn = delaunay(
   data.map((o) => {
