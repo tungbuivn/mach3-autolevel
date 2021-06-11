@@ -1,6 +1,11 @@
 var fs = require("fs");
-
-module.exports = function (config, Files) {
+/**
+ *
+ * @param {import("docs").IContainer} container
+ * @returns
+ */
+module.exports = function (container) {
+  const { config, Files } = container;
   function splitHoles(filename) {
     var content = fs.readFileSync(filename) + "";
     var lines = content
@@ -90,32 +95,33 @@ ${footers.join("\n")}
       }
       return a;
     }, {});
-    var scripts = [];
+    var drill = Files.get("_PTH");
+    var scripts = [
+      `open_excellon ${drill} -outname drill
+mirror drill -axis Y -box cutout`,
+    ];
     //   console.log(ss);
     if (ss.first) {
       var fname = Files.formatPath(`${Files.dir}/Drill_Custom.txt`);
       generateDrillFile(ss.first, `${fname}`);
       scripts.push(`# drill holes
-open_excellon ${fname} -outname drill
-mirror drill -axis Y -box cutout
-drillcncjob drill -tools ${ss.first.map((o, i) => i + 1).join()} -drillz ${
-        config.drillDepth
-      } -travelz 2 -feedrate ${config.drillFeedRate} -spindlespeed ${
-        config.spindleSpeed
-      } -outname drill_cnc
+
+drillcncjob drill -tools ${ss.first
+        .map((o, i) => parseInt(o.id.id))
+        .join()} -drillz ${config.drillDepth} -travelz 2 -feedrate ${
+        config.drillFeedRate
+      } -spindlespeed ${config.spindleSpeed} -outname drill_cnc
 write_gcode drill_cnc ${Files.dir}/drill.cnc
-#[-tools <str>] [-drillz <float>] [-travelz <float>] [-feedrate <float>] [-spindlespeed <int>] [-toolchange <bool>] [-outname <str>]
+
       `);
     }
     if (ss.second) {
       var fname = Files.formatPath(`${Files.dir}/Drill_Custom-Mill.txt`);
       generateDrillFile(ss.second, fname);
       scripts.push(`# milling holes
-open_excellon ${fname} -outname drill_mill
-mirror drill_mill -axis Y -box cutout
-millholes drill_mill -tools ${ss.second.map((o, i) => i + 1).join()} -tooldia ${
-        config.drillToolDiameter
-      } -outname drill_mill_geo
+millholes drill -tools ${ss.second
+        .map((o, i) => parseInt(o.id.id))
+        .join()} -tooldia ${config.drillToolDiameter} -outname drill_mill_geo
 cncjob drill_mill_geo -z_cut -2 -z_move 2 -feedrate 50 -tooldia ${
         config.drillToolDiameter
       } -spindlespeed ${
@@ -125,6 +131,7 @@ write_gcode drill_mill_cnc ${Files.dir}/drill_mill.cnc
 
       `);
     }
+
     // console.log(scripts);
     return scripts.join("\n");
     //   var less1mm = segs.filter((o) => o.id.size < 1);

@@ -22,7 +22,7 @@
     "fixout": "./fixout.js"
   },
   "devDependencies": {
-    "docs": "^0.3.2-canary.0",
+    "docs": "file:docs",
     "eslint": "^7.28.0",
     "prettier": "^2.3.1"
   }

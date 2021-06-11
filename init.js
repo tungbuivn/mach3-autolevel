@@ -1,4 +1,5 @@
 var fs = require("fs");
+var path = require("path");
 var bottle = new require("bottlejs")();
 bottle.service("Files", function () {
   var dir = process.cwd().replace(/\\/g, "/");
@@ -18,5 +19,10 @@ bottle.service("Files", function () {
   };
 });
 bottle.service("config", require("./config"));
-bottle.service("hole", require("./hole"), "config", "Files");
-module.exports = bottle.container;
+bottle.factory("hole", require("./hole"));
+bottle.factory("Gerber", require("./gerber"));
+/**
+ * @type {import("docs").IContainer}
+ */
+var exp = bottle.container;
+module.exports = exp;
