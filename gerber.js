@@ -40,9 +40,7 @@ module.exports = function (container) {
     // const spindleSpeed = 12000;
 
     var dir = Files.dir;
-    var fileList = fs.readdirSync(dir).filter((e) => {
-      return e.match(/(_PTH\.DRL|BoardOutline\.GKO|BottomLayer\.GBL)$/gi);
-    });
+    var fileList = Files.files;
     var holeList = fileList
       .filter((o) => o.match(/_PTH\.DRL/i))
       .map((f) => {

@@ -82,8 +82,8 @@ ${inits.join("\n")}
 ${codes}
 ${footers.join("\n")}
       `;
-      fs.writeFileSync(fileName, content);
-      console.log(fileName);
+      // fs.writeFileSync(fileName, content);
+      // console.log(fileName);
     }
     var ss = segs.reduce((a, b) => {
       if (b.id.size < 1) {
@@ -102,8 +102,7 @@ mirror drill -axis Y -box cutout`,
     ];
     //   console.log(ss);
     if (ss.first) {
-      var fname = Files.formatPath(`${Files.dir}/Drill_Custom.txt`);
-      generateDrillFile(ss.first, `${fname}`);
+      // generateDrillFile(ss.first, `${fname}`);
       scripts.push(`# drill holes
 
 drillcncjob drill -tools ${ss.first
@@ -116,8 +115,7 @@ write_gcode drill_cnc ${Files.dir}/drill.cnc
       `);
     }
     if (ss.second) {
-      var fname = Files.formatPath(`${Files.dir}/Drill_Custom-Mill.txt`);
-      generateDrillFile(ss.second, fname);
+      // generateDrillFile(ss.second, fname);
       scripts.push(`# milling holes
 millholes drill -tools ${ss.second
         .map((o, i) => parseInt(o.id.id))
