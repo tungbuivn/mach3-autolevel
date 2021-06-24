@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 import { inst as di } from "./init2.js";
 import { RpfGenerator } from "./autolevel/index.js";
 // console.log(di.get(require("./autolevel/genrpf")));
