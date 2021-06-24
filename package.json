@@ -20,6 +20,7 @@
     "delaunator": "^5.0.0",
     "delaunay-triangulate": "^1.1.6",
     "esm": "^3.2.25",
+    "express": "^4.17.1",
     "faster-delaunay": "^1.0.0",
     "injection-js": "^2.4.0",
     "intersects": "^2.7.2",

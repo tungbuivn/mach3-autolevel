@@ -1,6 +1,7 @@
 import * as fs from "fs";
 import { Inject, Injectable, ReflectiveInjector } from "injection-js";
 import { Config } from "../config2.js";
+import { GCode } from "../gcode/index.js";
 // var di = require("injection-js");
 
 // var Http = di.Class({
@@ -9,127 +10,128 @@ import { Config } from "../config2.js";
 
 export class RpfGenerator {
   static get parameters() {
-    return [new Inject(Config)];
+    return [new Inject(Config), new Inject(GCode)];
   }
 
-  constructor(config) {
-    this.config = config;
+  constructor(config, gcode) {
+    Object.assign(this, { config, gcode });
+    /**
+     * @type {GCode}
+     */
+    this.gcode = gcode;
   }
-  GenFile(...args) {
-    GenFile(...args);
-  }
-}
-// var RpfGenerator = di.Class({
-//   constructor: [
-//     require("../config2"),
-//     function (config) {
-//       console.log(config);
-//       this.GenFile = GenFile;
-//     },
-//   ],
-// });
-function GenFile(inFile) {
-  //   var inFile = process.argv[2];
-  var ct = fs.readFileSync(inFile) + "";
-  ct = ct
-    .split(/[\r\n]/g)
-    .filter((o) => !o.match(/^\(/))
-    .filter((o) => o != "");
-  var z = NaN;
-  var x = NaN;
-  var y = NaN;
-  var mi = { x: 1e6, y: 1e6, z: 1e6 },
-    ma = { x: -1e6, y: -1e6, z: -1e6 };
-  function getXY(s) {
-    s.split(/\s+/)
-      .filter((o) => o.match(/[XY]/gi))
-      .map((p) => p.split(/[XY]/gi));
-  }
-  var appendZ = ct.reduce((a, b) => {
-    var c = b + " ";
-    c = c.replace(/([XYZ]+.[^\sXYZ]*)/gi, " $1 ");
-    if (c.match(/\sZ/gi)) {
-      z = c
-        .split(" ")
-        .filter((o) => o.match(/z/gi))[0]
-        .split(/z/gi)[1];
-    }
-    if (c.match(/\sy/gi)) {
-      y = c
-        .split(" ")
-        .filter((o) => o.match(/y/gi))[0]
-        .split(/y/gi)[1];
-    }
-    if (c.match(/\sx/gi)) {
-      x = c
-        .split(" ")
-        .filter((o) => o.match(/x/gi))[0]
-        .split(/x/gi)[1];
-    }
-    if (c.match(/[XY]/gi)) {
-      c = c + " Z" + z + " ";
-    }
-    var xyz = { x: parseFloat(x), y: parseFloat(y), z: parseFloat(z) };
-    mi = {
-      x: Math.min(mi.x, xyz.x || 1e6),
-      y: Math.min(mi.y, xyz.y || 1e6),
-      z: Math.min(mi.z, xyz.z || 1e6),
-    };
-    ma = {
-      x: Math.max(ma.x, xyz.x || -1e6),
-      y: Math.max(ma.y, xyz.y || -1e6),
-      z: Math.max(ma.z, xyz.z || -1e6),
-    };
-    a.push(Object.assign({ ord: b }, xyz));
-    return a;
-  }, []);
-  var dx = ma.x - mi.x,
-    dy = ma.y - mi.y,
-    countSegX = Math.floor(dx / 10),
-    countSegY = Math.floor(dy / 10),
-    lenX = dx / countSegX,
-    lenY = dy / countSegY;
+  // /**
+  //  * @type {GCode}
+  //  */
+  // get gcode() {
+  //   return this._gcode;
+  // }
+  GenFile(inFile) {
+    //   var inFile = process.argv[2];
+    // var ct = fs.readFileSync(inFile) + "";
+    // ct = ct
+    //   .split(/[\r\n]/g)
+    //   .filter((o) => !o.match(/^\(/))
+    //   .filter((o) => o != "");
+    // var z = NaN;
+    // var x = NaN;
+    // var y = NaN;
+    // var mi = { x: 1e6, y: 1e6, z: 1e6 },
+    //   ma = { x: -1e6, y: -1e6, z: -1e6 };
+    // function getXY(s) {
+    //   s.split(/\s+/)
+    //     .filter((o) => o.match(/[XY]/gi))
+    //     .map((p) => p.split(/[XY]/gi));
+    // }
+    // var appendZ = ct.reduce((a, b) => {
+    //   var c = b + " ";
+    //   c = c.replace(/([XYZ]+.[^\sXYZ]*)/gi, " $1 ");
+    //   if (c.match(/\sZ/gi)) {
+    //     z = c
+    //       .split(" ")
+    //       .filter((o) => o.match(/z/gi))[0]
+    //       .split(/z/gi)[1];
+    //   }
+    //   if (c.match(/\sy/gi)) {
+    //     y = c
+    //       .split(" ")
+    //       .filter((o) => o.match(/y/gi))[0]
+    //       .split(/y/gi)[1];
+    //   }
+    //   if (c.match(/\sx/gi)) {
+    //     x = c
+    //       .split(" ")
+    //       .filter((o) => o.match(/x/gi))[0]
+    //       .split(/x/gi)[1];
+    //   }
+    //   if (c.match(/[XY]/gi)) {
+    //     c = c + " Z" + z + " ";
+    //   }
+    //   var xyz = { x: parseFloat(x), y: parseFloat(y), z: parseFloat(z) };
+    //   mi = {
+    //     x: Math.min(mi.x, xyz.x || 1e6),
+    //     y: Math.min(mi.y, xyz.y || 1e6),
+    //     z: Math.min(mi.z, xyz.z || 1e6),
+    //   };
+    //   ma = {
+    //     x: Math.max(ma.x, xyz.x || -1e6),
+    //     y: Math.max(ma.y, xyz.y || -1e6),
+    //     z: Math.max(ma.z, xyz.z || -1e6),
+    //   };
+    //   a.push(Object.assign({ ord: b }, xyz));
+    //   return a;
+    // }, []);
+    var gdata = this.gcode.loadFile(inFile);
 
-  var po = [].concat(
-    ...Array.from(new Array(countSegY + 1)).map((o, j) => {
-      var ar = [].concat(
-        ...Array.from(new Array(countSegX + 1)).map((o, i) => {
-          var rs = [];
-          if (i < countSegX && j < countSegY) {
-            rs.push({
-              x: mi.x + (i * dx) / countSegX + lenX / 2,
-              y: mi.y + (j * dy) / countSegY + lenY / 2,
-            });
-          }
-          return [].concat(
-            [
-              {
-                x: mi.x + (i * dx) / countSegX,
-                y: mi.y + (j * dy) / countSegY,
-              },
-            ],
-            rs
-          );
-        })
-      );
-      if ((j + 1) % 2 == 0) {
-        ar.reverse();
-      }
-      return ar;
-    })
-  );
-  var dist = Math.sqrt(dx * dx + dy * dy);
-  function GenCNC() {
-    return po
-      .map((o) => {
-        return `G0 Z2
+    var mi = gdata.min,
+      ma = gdata.max,
+      dx = ma.x - mi.x,
+      dy = ma.y - mi.y,
+      countSegX = Math.floor(dx / 10),
+      countSegY = Math.floor(dy / 10),
+      lenX = dx / countSegX,
+      lenY = dy / countSegY;
+
+    var po = [].concat(
+      ...Array.from(new Array(countSegY + 1)).map((o, j) => {
+        var ar = [].concat(
+          ...Array.from(new Array(countSegX + 1)).map((o, i) => {
+            var rs = [];
+            if (i < countSegX && j < countSegY) {
+              rs.push({
+                x: mi.x + (i * dx) / countSegX + lenX / 2,
+                y: mi.y + (j * dy) / countSegY + lenY / 2,
+              });
+            }
+            return [].concat(
+              [
+                {
+                  x: mi.x + (i * dx) / countSegX,
+                  y: mi.y + (j * dy) / countSegY,
+                },
+              ],
+              rs
+            );
+          })
+        );
+        if ((j + 1) % 2 == 0) {
+          ar.reverse();
+        }
+        return ar;
+      })
+    );
+    var dist = Math.sqrt(dx * dx + dy * dy);
+    function GenCNC() {
+      return po
+        .map((o) => {
+          return `G0 Z2
 G1 X${o.x} Y${o.y} F800
 G31 Z-1 F50`;
-      })
-      .join("\n");
-  }
-  var str = GenCNC();
-  var out = `M0 (Attach probe wires and clips that need attaching)
+        })
+        .join("\n");
+    }
+    var str = GenCNC();
+    var out = `M0 (Attach probe wires and clips that need attaching)
 (Initialize probe routine)
 G92 X0 Y0 Z0
 G0 Z5 (Move clear of the board first)
@@ -142,18 +144,32 @@ G31 Z-1 F25 (Repeat at a more accurate slower rate)
 G92 Z0
 G0 Z2
 
+
 M40 (Begins a probe log file, when the window appears, enter a name for the log file such as "RawProbeLog.txt")
 ${str}
 G0 Z5
+
+
 M41 (Closes the opened log file)
 G0 X0 Y0 Z5
 M0 (Detach any clips used for probing)
 M30
 `;
-  console.info("Generate file ...");
-  fs.writeFileSync("./rpf.cnc", out);
-  //   console.log(appendZ);
+    console.info("Generate file ...");
+    fs.writeFileSync("./rpf.cnc", out);
+    //   console.log(appendZ);
+  }
 }
+// var RpfGenerator = di.Class({
+//   constructor: [
+//     require("../config2"),
+//     function (config) {
+//       console.log(config);
+//       this.GenFile = GenFile;
+//     },
+//   ],
+// });
+// function GenFile(inFile) {}
 // var inFile = process.argv[2];
 // GenFile(inFile);
 //module.exports = RpfGenerator;
