@@ -1,3 +1,3 @@
 export interface Inst {
-    get<T>(cls:T):T;
+    get<T>(cls: { new(): T }): T;
 }
