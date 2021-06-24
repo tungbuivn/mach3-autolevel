@@ -1,12 +1,18 @@
-var fs = require("fs");
-/**
- *
- * @param {import("docs").IContainer} container
- * @returns
- */
-module.exports = function (container) {
-  const { config, Files } = container;
-  function splitHoles(filename) {
+import * as fs from "fs";
+import { Inject } from "injection-js";
+import { Config } from "../config2.js";
+import { Files } from "../Files.js";
+
+export class Hole {
+  static get parameters() {
+    return [new Inject(Config), new Inject(Files)];
+  }
+  constructor(config, files) {
+    this.files = files;
+    this.config = config;
+  }
+  splitHoles(filename) {
+    var { files, config } = this;
     var content = fs.readFileSync(filename) + "";
     var lines = content
       .replace(/(?:\\[rn]|[\r\n]+)+/g, String.fromCharCode(0))
@@ -82,8 +88,6 @@ ${inits.join("\n")}
 ${codes}
 ${footers.join("\n")}
       `;
-      // fs.writeFileSync(fileName, content);
-      // console.log(fileName);
     }
     var ss = segs.reduce((a, b) => {
       if (b.id.size < 1) {
@@ -95,7 +99,7 @@ ${footers.join("\n")}
       }
       return a;
     }, {});
-    var drill = Files.get("_PTH");
+    var drill = files.get("_PTH");
     var scripts = [
       `open_excellon ${drill} -outname drill
 mirror drill -axis Y -box cutout`,
@@ -110,7 +114,7 @@ drillcncjob drill -tools ${ss.first
         .join()} -drillz ${config.drillDepth} -travelz 2 -feedrate ${
         config.drillFeedRate
       } -spindlespeed ${config.spindleSpeed} -outname drill_cnc
-write_gcode drill_cnc ${Files.dir}/drill.cnc
+write_gcode drill_cnc ${files.dir}/drill.cnc
 
       `);
     }
@@ -125,7 +129,7 @@ cncjob drill_mill_geo -z_cut -2 -z_move 2 -feedrate 50 -tooldia ${
       } -spindlespeed ${
         config.spindleSpeed
       } -multidepth true -depthperpass 0.5 -outname drill_mill_cnc      
-write_gcode drill_mill_cnc ${Files.dir}/drill_mill.cnc
+write_gcode drill_mill_cnc ${files.dir}/drill_mill.cnc
 
       `);
     }
@@ -139,7 +143,4 @@ write_gcode drill_mill_cnc ${Files.dir}/drill_mill.cnc
     // read tool list
     //   console.log(all);
   }
-  return {
-    splitHoles: splitHoles,
-  };
-};
+}

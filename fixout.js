@@ -1,8 +1,10 @@
 #!/usr/bin/env node
-var fs = require("fs");
-var path = require("path");
+import * as fs from "fs";
+import * as path from "path";
 
-var sourceFile = process.argv[2];
+var sourceFile = process.argv[2].replace(/\\+/gi, "/");
+
+sourceFile = path.basename(sourceFile);
 var dir = process.cwd();
 // dir="d:\\downloads\\Gerber_PCB_print";
 var ext = path.extname(sourceFile);

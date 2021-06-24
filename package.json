@@ -3,8 +3,12 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "type": "module",
+  "engines": {
+    "vscode": "^1.22.0"
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
   },
   "keywords": [],
   "author": "",
@@ -12,18 +16,26 @@
   "dependencies": {
     "@jingwood/graphics-math": "^1.1.18",
     "bottlejs": "^2.0.0",
+    "d3-delaunay": "^6.0.2",
+    "delaunator": "^5.0.0",
+    "delaunay-triangulate": "^1.1.6",
+    "esm": "^3.2.25",
     "faster-delaunay": "^1.0.0",
+    "injection-js": "^2.4.0",
     "intersects": "^2.7.2",
     "point-in-polygon": "^1.1.0"
   },
   "bin": {
     "ger": "./ger.js",
     "mod": "./mod.js",
-    "fixout": "./fixout.js"
+    "fixout": "./fixout.js",
+    "bed": "./bed.js",
+    "rpf": "./rpf.js"
   },
   "devDependencies": {
     "docs": "file:docs",
     "eslint": "^7.28.0",
+    "jest": "^27.0.5",
     "prettier": "^2.3.1"
   }
 }

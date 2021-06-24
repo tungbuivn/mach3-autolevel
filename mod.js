@@ -1,5 +1,7 @@
-var fs = require("fs");
-var path = require("path");
+import * as fs from "fs";
+import * as path from "path";
+// var fs = require("fs");
+// var path = require("path");
 var file = process.argv[2];
 var cutDepth = "0.5";
 var prevIsZ5 = false;

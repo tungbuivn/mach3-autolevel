@@ -1,6 +1,4 @@
-var delaunay = require("faster-delaunay");
-var pointInPolygon = require("point-in-polygon");
-var intersects = require("intersects");
+var Delaunator = require("./dx");
 
 var fs = require("fs");
 function extractPoint(s) {
@@ -14,13 +12,13 @@ function extractPoint(s) {
 }
 
 /**
- * @type {Array.<import("./docs").ISourceLine>}
+ * @type {Array.<import("../docs").ISourceLine>}
  */
 var sourceLines;
 /**
  *
  * @param {String} file
- * @returns {Array.<import("./docs").ISourceLine>}
+ * @returns {Array.<import("../docs").ISourceLine>}
  */
 function loadGCode(file) {
   var s = fs.readFileSync(file) + "";
@@ -35,8 +33,8 @@ function loadGCode(file) {
       };
     });
 
-  var lastX = 999999,
-    lastY = 999999,
+  var lastX = NaN,
+    lastY = NaN,
     lastZ = NaN;
   var arr = sourceLines
     .filter((src) => {
@@ -84,8 +82,13 @@ function loadRpfFile(fname) {
 var rpfData = loadRpfFile(
   "c:/node-projects/Gerber_PCB_sensor_2021-06-07/rpf.rpf"
 );
-var rpfFace = delaunay(rpfData.map((o) => [o.X, o.Y, o.Z]))
-  .triangulate()
+var a = Math.random();
+
+var points = [].concat([
+  0, 0, 1, 0, 2, 0, 2, 1, 1, 1, 0, 1, 0, 2, 1, 2, 2, 2, 0.5, 0.5, 1.5, 1.5, 0.5,
+  1.5, 0.5, 1.5, 1.5, 0.5,
+]);
+var dn = new Delaunator(points).triangles // .triangulate() // ) //   false //   rpfData.map((o) => [o.X + Math.random() / 1e-3, o.Y + Math.random() / 1e-3]), // var rpfFace = delaunay(
   .reduce((a, b, i) => {
     var idt = (i / 3) >> 0;
     a[idt] = a[idt] || [];
@@ -93,18 +96,27 @@ var rpfFace = delaunay(rpfData.map((o) => [o.X, o.Y, o.Z]))
 
     return a;
   }, []);
-
-var gcode = rpfFace
-  .map((o) => {
+var m2 = points.reduce((a, b, i) => {
+  var idt = (i / 2) >> 0;
+  a[idt] = a[idt] || [];
+  a[idt].push(b);
+  return a;
+}, []);
+var gcode = dn
+  .map((o, i) => {
     var [p1, p2, p3] = o;
+
     return `
 G0 Z5
+G00 X${m2[p1][0]} Y${m2[p1][1]}
 G01 Z-0.1
-G01 X${p1[0]} Y${p1[1]}
-G01 X${p2[0]} Y${p2[1]}
-G01 X${p3[0]} Y${p3[1]}
+G01 X${m2[p1][0]} Y${m2[p1][1]}
+G01 X${m2[p2][0]} Y${m2[p2][1]}
+G01 X${m2[p3][0]} Y${m2[p3][1]}
+G01 X${m2[p1][0]} Y${m2[p1][1]}
 G01 Z0
 G00 Z5
+
   `;
   })
 
@@ -120,7 +132,7 @@ G00 Z5.0000
 M03 S12000
 G4 P1
   
-G00 X${rpfFace[0][0][0]}Y${rpfFace[0][0][1]}
+G00 X${m2[0][0]}Y${m2[0][1]}
 
 ${gcode}
 G00 Z5.0000
@@ -130,20 +142,20 @@ M05
 `
 );
 var data = loadGCode("./top.nc");
-var dn = delaunay(
-  data.map((o) => {
-    return [o.X, o.Y, o.Z, o];
-  })
-);
-var faces = dn.triangulate();
+// var dn = delaunay(
+//   data.map((o) => {
+//     return [o.X, o.Y, o.Z, o];
+//   })
+// );
+// var faces = dn.triangulate();
 
-var points = faces.reduce((a, b, i) => {
-  var idt = (i / 3) >> 0;
-  a[idt] = a[idt] || [];
-  a[idt].push(b);
+// var points = faces.reduce((a, b, i) => {
+//   var idt = (i / 3) >> 0;
+//   a[idt] = a[idt] || [];
+//   a[idt].push(b);
 
-  return a;
-}, []);
+//   return a;
+// }, []);
 
 function lineToLine(x1, y1, x2, y2, x3, y3, x4, y4) {
   var s1_x = x2 - x1;
@@ -200,7 +212,7 @@ function splitSegment(a, b, ...lines) {
 
 var spl = splitSegment(
   { x: -1, y: 0.5, start: true },
-  { x: 0.7, y: 0.5, end: true },
+  { x: 5, y: 0.5, end: true },
   [
     { x: 0, y: 0 },
     { x: 0, y: 5 },
@@ -208,6 +220,10 @@ var spl = splitSegment(
   [
     { x: 1, y: 0 },
     { x: 1, y: 5 },
+  ],
+  [
+    { x: 3, y: 0 },
+    { x: 3, y: 5 },
   ]
 );
 

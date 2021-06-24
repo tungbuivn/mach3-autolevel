@@ -1,14 +1,24 @@
-var fs = require("fs");
-var path = require("path");
-var spawn = require("child_process").spawn;
-/**
- *
- * @param {import("docs").IContainer} container
- * @returns
- */
-module.exports = function (container) {
-  return () => {
-    var { config, hole, Files } = container;
+import * as fs from "fs";
+import * as path from "path";
+import { spawn } from "child_process";
+import { Config } from "../config2.js";
+import { Files } from "../Files.js";
+import { Hole } from "./hole.js";
+import { Inject } from "injection-js";
+export class Gerber {
+  static get parameters() {
+    return [new Inject(Config), new Inject(Files), new Inject(Hole)];
+  }
+
+  /**
+   *
+   * @param {Config} config
+   */
+  constructor(config, files, hole) {
+    Object.assign(this, { config, files, hole });
+  }
+  run() {
+    var { config, hole, files } = this;
     // define constant
     var {
       zSafe,
@@ -39,8 +49,8 @@ module.exports = function (container) {
 
     // const spindleSpeed = 12000;
 
-    var dir = Files.dir;
-    var fileList = Files.files;
+    var dir = files.dir;
+    var fileList = files.files;
     var holeList = fileList
       .filter((o) => o.match(/_PTH\.DRL/i))
       .map((f) => {
@@ -110,5 +120,13 @@ write_gcode cutout_cnc ${dir}/cutout.cnc
     spawn(`C:/Program Files (x86)/FlatCAM/FlatCAM.exe`, [
       `--shellfile=${outScript}`,
     ]);
-  };
-};
+  }
+}
+// /**
+//  *
+//  * @param {import("docs").IContainer} container
+//  * @returns
+//  */
+// module.exports = function (container) {
+//   return () => {};
+// };
