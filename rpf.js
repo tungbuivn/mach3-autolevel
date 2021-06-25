@@ -9,4 +9,4 @@ var inFile = process.argv[2] || "";
 if (inFile == "") {
   throw new Error("Missing input file");
 }
-gen.GenFile(inFile);
+gen.genFile(inFile);

@@ -26,7 +26,7 @@ export class RpfGenerator {
   // get gcode() {
   //   return this._gcode;
   // }
-  GenFile(inFile) {
+  genFile(inFile) {
     //   var inFile = process.argv[2];
     // var ct = fs.readFileSync(inFile) + "";
     // ct = ct
