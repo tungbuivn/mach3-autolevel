@@ -9,6 +9,9 @@ export class Hole {
   }
   constructor(config, files) {
     this.files = files;
+    /**
+     * @type {Config}
+     */
     this.config = config;
   }
   splitHoles(filename) {
@@ -118,6 +121,7 @@ write_gcode drill_cnc ${files.dir}/drill.cnc
 
       `);
     }
+
     if (ss.second) {
       // generateDrillFile(ss.second, fname);
       scripts.push(`# milling holes
@@ -126,9 +130,9 @@ millholes drill -tools ${ss.second
         .join()} -tooldia ${config.drillToolDiameter} -outname drill_mill_geo
 cncjob drill_mill_geo -z_cut -2 -z_move 2 -feedrate 50 -tooldia ${
         config.drillToolDiameter
-      } -spindlespeed ${
-        config.spindleSpeed
-      } -multidepth true -depthperpass 0.5 -outname drill_mill_cnc      
+      } -spindlespeed ${config.spindleSpeed} -multidepth true -depthperpass ${
+        config.bottomLayerMillingDepth
+      } -outname drill_mill_cnc      
 write_gcode drill_mill_cnc ${files.dir}/drill_mill.cnc
 
       `);

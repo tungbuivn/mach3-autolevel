@@ -26,6 +26,7 @@ export class Gerber {
       drillFeedRate,
       drillDepth,
       bottomLayerFeedRate,
+      bottomLayerMillingDepth,
       bottomLayerToolDiameter,
       cutoutDepth,
       cutoutDepthPerpass,
