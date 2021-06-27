@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 import fs from "fs";
 import * as path from "path";
 // var fs = require("fs");
