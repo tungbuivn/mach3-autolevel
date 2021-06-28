@@ -6,7 +6,8 @@ const drillDepth = -1.8;
 
 const bottomLayerFeedRate = 100;
 const bottomLayerMillingDepth = 0.1;
-const bottomLayerToolDiameter = 0.5;
+const bottomLayerMillingCount = 4;
+const bottomLayerToolDiameter = 0.3;
 
 const cutoutDepth = -2;
 const cutoutDepthPerpass = 0.5;
@@ -22,6 +23,7 @@ export class Config {
     this.drillFeedRate = drillFeedRate;
     this.drillDepth = drillDepth;
     this.bottomLayerFeedRate = bottomLayerFeedRate;
+    this.bottomLayerMillingCount = bottomLayerMillingCount;
     this.bottomLayerMillingDepth = bottomLayerMillingDepth;
     this.bottomLayerToolDiameter = bottomLayerToolDiameter;
     this.cutoutDepth = cutoutDepth;
