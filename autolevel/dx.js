@@ -9,14 +9,20 @@ export class DelaunayPlane {
   loadPointsFromFile(fileName) {
     var str = fs.readFileSync(fileName) + "";
     var pos = str
-      .split("\n")
+      .replace(/[\r\n]/gi, "===split===")
+      .split("===split===")
       .filter((o) => o.trim() != "")
       .map((o) => {
         var xyz = o.split(",");
+        var ps = parseFloat(xyz[2]);
+        if (isNaN(ps)) {
+          ps = 1e-10;
+          throw new Error("=== Invalid coordinates !!!");
+        }
         return {
           x: parseFloat(xyz[0]),
           y: parseFloat(xyz[1]),
-          z: parseFloat(xyz[2]) || -9e-10,
+          z: ps,
         };
       });
     /**

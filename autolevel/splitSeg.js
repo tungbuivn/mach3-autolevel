@@ -13,23 +13,34 @@ function lineToLine(x1, y1, x2, y2, x3, y3, x4, y4) {
     y: y1 + s1_y * t,
   };
 }
+function resolveZ(rs, c, d) {
+  var vax = d.x - c.x,
+    vay = d.y - c.y,
+    vaz = d.z - c.z,
+    z = NaN,
+    t = NaN;
+  if (vax != 0) {
+    t = (rs.x - c.x) / vax;
+  } else if (vay != 0) {
+    t = (rs.y - c.y) / vay;
+  }
+  z = c.z + vaz * t;
+  return z;
+}
 function interSeg(a, b, c, d) {
   var rs = lineToLine(a.x, a.y, b.x, b.y, c.x, c.y, d.x, d.y);
   if (rs.inter) {
     //calculate z value
-    var vax = b.x - a.x,
-      vay = b.y - a.y,
-      vaz = b.z - a.z,
-      z = NaN,
-      t = NaN;
-    if (vax != 0) {
-      t = (rs.x - a.x) / vax;
-    } else if (vay != 0) {
-      t = (rs.y - a.y) / vay;
-    }
-    z = a.z + vaz * t;
 
-    var p = { x: rs.x, y: rs.y, z: z, mid: true };
+    var vz = resolveZ(rs, c, d);
+
+    var p = {
+      x: rs.x,
+      y: rs.y,
+      z: resolveZ(rs, a, b),
+      resolvedZ: vz,
+      mid: true,
+    };
     return [
       [a, p],
       [p, b],

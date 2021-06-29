@@ -8,7 +8,7 @@
     "vscode": "^1.22.0"
   },
   "scripts": {
-    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js"
+    "test": "node --experimental-modules ./spec/intro-spec.js"
   },
   "keywords": [],
   "author": "",
@@ -24,8 +24,13 @@
     "faster-delaunay": "^1.0.0",
     "injection-js": "^2.4.0",
     "intersects": "^2.7.2",
+    "jest-environment-node": "^27.0.6",
     "point-in-polygon": "^1.1.0"
   },
+  "moduleDirectories": [
+    "node_modules",
+    "src"
+  ],
   "bin": {
     "ger": "./ger.js",
     "mod": "./mod.js",
@@ -37,6 +42,8 @@
   "devDependencies": {
     "docs": "file:docs",
     "eslint": "^7.28.0",
+    "jasmine": "^3.7.0",
+    "jasmine-console-reporter": "^3.1.0",
     "jest": "^27.0.5",
     "prettier": "^2.3.1"
   }

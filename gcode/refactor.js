@@ -1,10 +1,14 @@
 import * as fs from "fs";
+import * as path from "path";
 import { Inject, ReflectiveInjector } from "injection-js";
 import { DelaunayPlane } from "../autolevel/dx.js";
 import { Files } from "../Files.js";
 import { GCode } from "./index.js";
 import { splitSegment } from "../autolevel/splitSeg.js";
-
+import { resolveHeight } from "../autolevel/resolveHeight.js";
+function fmt(v) {
+  return v.toFixed(6);
+}
 export class RefactorHeightMap {
   static get parameters() {
     return [new Inject(Files), new Inject(GCode), new Inject(DelaunayPlane)];
@@ -36,10 +40,10 @@ export class RefactorHeightMap {
       var l = null;
       var rs = o
         .map((a) => {
-          return `G1 X${a.x} Y${a.y}`;
+          return `G1 X${a.x} Y${a.y} Z${a.z}`;
         })
         .join("\n");
-      return `G0 Z5\nG0 X${o[0].x}Y${o[0].y}\nG1 Z-0.1\n${rs}`;
+      return `G00 Z5\nG00 X${o[0].x}Y${o[0].y}\n${rs}`;
     });
     fs.writeFileSync("./tri.nc", str.join("\n"));
   }
@@ -129,13 +133,56 @@ export class RefactorHeightMap {
       .filter((o) => o != null)
       .map((o) => {
         if (o.ord) {
+          if (typeof o.resolvedZ == "undefined" && !isNaN(o.x) && !isNaN(o.y)) {
+            for (var tr of tri.triangles) {
+              var it = resolveHeight(o, tr[0], tr[1], tr[2]);
+              if (it != null) {
+                o.resolvedZ = it.z;
+                break;
+              }
+            }
+          }
           return o;
         }
-        o.ord = `G01 X${o.x} Y${o.y} Z${o.z}`;
+        o.ord = `G01 X${fmt(o.x)} Y${fmt(o.y)} Z${fmt(o.z)}`;
+
         return o;
       });
-    var outFile = "almod.nc";
-    fs.writeFileSync(outFile, joinData.map((o) => o.ord).join("\n"));
-    console.log(mpe);
+    // map height
+    joinData = joinData.map((o) => {
+      o.ord = o.ord.replace(/([XYZ])/gi, " $1");
+      o.update = o.ord;
+      if (isNaN(o.z)) {
+        return o;
+      }
+      if (o.z == 5) return o;
+      if (!o.ord.match(/^\(/g) && o.ord.match(/Z/i) && !isNaN(o.resolvedZ)) {
+        o.update = o.ord
+          .replace(/z/gi, " Z")
+          .split(" ")
+          .reduce((a, b) => {
+            if (b.match(/z/gi)) {
+              b = b.replace(/z/gi, "");
+              b = `Z${fmt(o.z + o.resolvedZ)}`;
+            }
+            a.push(b);
+            return a;
+          }, [])
+          .filter((q) => q != "")
+          .join(" ");
+      } else {
+        var po = [o.ord];
+        if (!isNaN(o.z) && !isNaN(o.resolvedZ)) {
+          po.push(`Z${fmt(o.z + o.resolvedZ)}`);
+        }
+        o.update = po.join(" ");
+      }
+      return o;
+    });
+    var dir = path.dirname(gcodeFile).replace(/\\/gi, "/");
+    var file = path.basename(gcodeFile);
+    var outFile = `${dir}/almod-${file}`;
+    fs.writeFileSync(outFile, joinData.map((o) => o.update).join("\n"));
+    console.log(`Creating output file ${outFile}`);
   }
 }

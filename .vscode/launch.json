@@ -39,6 +39,16 @@
       "args": [".\\PFG~67x37.nc"],
       "type": "node"
     },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Launch Jest Current file",
+      "skipFiles": ["<node_internals>/**"],
+
+      "runtimeArgs": ["--experimental-vm-modules"],
+      "program": "${workspaceFolder}/node_modules/jest/bin/jest.js",
+      "args": ["${file}"]
+    },
 
     {
       "type": "node",
