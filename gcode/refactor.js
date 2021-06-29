@@ -7,7 +7,7 @@ import { GCode } from "./index.js";
 import { splitSegment } from "../autolevel/splitSeg.js";
 import { resolveHeight } from "../autolevel/resolveHeight.js";
 function fmt(v) {
-  return v.toFixed(6);
+  return v.toFixed(4);
 }
 export class RefactorHeightMap {
   static get parameters() {
@@ -64,6 +64,7 @@ export class RefactorHeightMap {
       return a;
     }, []);
     var tri = this._delaunayPlane.loadPointsFromFile(heightmapFile);
+    
     this.generateTriangleGcode([].concat(tri.triangles));
     var lines = [].concat(
       ...tri.triangles.map((o) => {
@@ -177,11 +178,29 @@ export class RefactorHeightMap {
         }
         o.update = po.join(" ").replace(/\s+/g," ");;
       }
+      o.update=`${o.update}${o.comment||""}`;
       return o;
     });
     var dir = path.dirname(gcodeFile).replace(/\\/gi, "/");
     var file = path.basename(gcodeFile);
     var outFile = `${dir}/almod-${file}`;
+    joinData.unshift({update:`(This GCode script was designed to adjust the Z height of a CNC machine according)
+(to the minute variations in the surface height in order to achieve a better result in the milling/etching process)
+(This script is the output of AutoLevellerAE, 0.9.5u2 Changeset: ...2d0387 @ http://autoleveller.co.uk)
+(Author: James Hawthorne PhD. File creation date: 26-06-2021 10:06)
+(This program and any of its output is licensed under GPLv2 and as such...)
+(AutoLevellerAE comes with ABSOLUTELY NO WARRANTY; for details, see sections 11 and 12 of the GPLv2 @ http://www.gnu.org/licenses/old-licenses/gpl-2.0.html)
+
+G90 G21 S20000 G17
+
+M0 (Attach probe wires and clips that need attaching)
+(Initialize probe routine)
+G1 X${tri.min.x} Y${tri.min.y} F1000 (Move to bottom left corner)
+G31 Z-100 F50 (Probe to a maximum of the specified probe height at the specified feed rate)
+G92 Z0 (Touch off Z to 0 once contact is made)
+G0 Z5
+M0 (Detach any clips used for probing)
+    `})
     fs.writeFileSync(outFile, joinData.map((o) => o.update).join("\n"));
     console.log(`Creating output file ${outFile}`);
   }

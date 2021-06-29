@@ -88,13 +88,13 @@ export class RpfGenerator {
       dx = ma.x - mi.x,
       dy = ma.y - mi.y,
       countSegX = Math.floor(dx / 10),
-      countSegY = Math.floor(dy / 10),
-      lenX = dx / countSegX,
+      countSegY = Math.floor(dy / 10);
+            if (countSegX==0) countSegX=1;
+      if (countSegY==0) countSegY=1;
+    
+    var  lenX = dx / countSegX,
       lenY = dy / countSegY;
-      if (countSegX==0 || countSegY==0) {
-        throw new Error("Loi, khong tao duoc grid")
-      }
-
+    
     var po = [].concat(
       ...Array.from(new Array(countSegY + 1)).map((o, j) => {
         var ar = [].concat(
@@ -134,7 +134,8 @@ G31 Z-1 F50`;
         .join("\n");
     }
     var str = GenCNC();
-    var out = `M0 (Attach probe wires and clips that need attaching)
+    var out = `G90 G21 S20000 G17
+M0 (Attach probe wires and clips that need attaching)
 (Initialize probe routine)
 G92 X0 Y0 Z0
 G0 Z5 (Move clear of the board first)

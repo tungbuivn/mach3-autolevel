@@ -7,6 +7,7 @@ export class DelaunayPlane {
    */
   constructor() {}
   loadPointsFromFile(fileName) {
+    var mi={x:9e999,y:9e999},ma={x:-9e999,y:-9e999};
     var str = fs.readFileSync(fileName) + "";
     var pos = str
       .replace(/[\r\n]/gi, "===split===")
@@ -19,12 +20,19 @@ export class DelaunayPlane {
           ps = 1e-10;
           throw new Error("=== Invalid coordinates !!!");
         }
-        return {
+        var obj={
           x: parseFloat(xyz[0]),
           y: parseFloat(xyz[1]),
           z: ps,
         };
+        mi.x=Math.min(mi.x,obj.x);
+        mi.y=Math.min(mi.y,obj.y);
+
+        ma.x=Math.max(ma.x,obj.x);
+        ma.y=Math.max(ma.y,obj.y);
+        return obj; 
       });
+    
     /**
      * @type {Array.<import("../index").IPoint2D>}
      */
@@ -38,6 +46,7 @@ export class DelaunayPlane {
     // }, []);
 
     var delaunay = new Delaunator(flat);
+    
     var tri = delaunay.triangles.reduce((a, b, i) => {
       var idx = (i / 3) >> 0;
       a[idx] = a[idx] || [];
@@ -46,6 +55,8 @@ export class DelaunayPlane {
     }, []);
     var triangles = tri.map((o) => o.map((q) => pos[q]));
     return {
+      min:mi,
+      max:ma,
       points: pos,
       triangles: triangles,
     };

@@ -71,7 +71,7 @@ export function splitSegment(a, b, ...lines) {
           if (dist(...ri[0]) > 1e-6 && dist(...ri[1]) > 1e-6) {
             var p1 = sources.slice(0, idx + 1);
             var p2 = sources.slice(idx + 1);
-
+            ri[0][1].comment="          ;auto splited"
             sources = p1.concat(ri[0][1], p2);
             i = -1;
             break;
