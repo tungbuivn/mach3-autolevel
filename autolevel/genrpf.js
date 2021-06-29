@@ -91,6 +91,9 @@ export class RpfGenerator {
       countSegY = Math.floor(dy / 10),
       lenX = dx / countSegX,
       lenY = dy / countSegY;
+      if (countSegX==0 || countSegY==0) {
+        throw new Error("Loi, khong tao duoc grid")
+      }
 
     var po = [].concat(
       ...Array.from(new Array(countSegY + 1)).map((o, j) => {

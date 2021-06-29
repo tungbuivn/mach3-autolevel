@@ -10,8 +10,8 @@
       "request": "launch",
       "skipFiles": ["<node_internals>/**"],
       "type": "node",
-      "cwd": "${workspaceFolder}/../Gerber_PCB_sensor_2021-06-07",
-      "args": ["cutout.cnc"]
+      "cwd": "${workspaceFolder}/__tests__/data",
+      "args": ["bottom.nc"]
     },
     {
       "name": "Launch heightmap",
