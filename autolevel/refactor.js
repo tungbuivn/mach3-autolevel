@@ -1,11 +1,11 @@
 import * as fs from "fs";
 import * as path from "path";
 import { Inject, ReflectiveInjector } from "injection-js";
-import { DelaunayPlane } from "../autolevel/dx.js";
+import { DelaunayPlane } from "./dx.js";
 import { Files } from "../Files.js";
-import { GCode } from "./index.js";
-import { splitSegment } from "../autolevel/splitSeg.js";
-import { resolveHeight } from "../autolevel/resolveHeight.js";
+import { GCode } from "../gcode/index.js";
+import { splitSegment } from "./splitSeg.js";
+import { resolveHeight } from "./resolveHeight.js";
 function fmt(v) {
   return v.toFixed(4);
 }

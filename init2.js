@@ -6,7 +6,7 @@ import { Files } from "./Files.js";
 import { Gerber } from "./gerber/gerber.js";
 import { Hole } from "./gerber/hole.js";
 import { GCode } from "./gcode/index.js";
-import { RefactorHeightMap } from "./gcode/refactor.js";
+import { RefactorHeightMap } from "./autolevel/refactor.js";
 import { DelaunayPlane } from "./autolevel/dx.js";
 
 var inst = di.ReflectiveInjector.resolveAndCreate([
