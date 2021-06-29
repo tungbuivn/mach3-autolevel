@@ -151,7 +151,7 @@ export class RefactorHeightMap {
     // map height
     joinData = joinData.map((o) => {
       o.ord = o.ord.replace(/([XYZ])/gi, " $1");
-      o.update = o.ord;
+      o.update = o.ord.replace(/\s+/g," ");
       if (isNaN(o.z)) {
         return o;
       }
@@ -175,7 +175,7 @@ export class RefactorHeightMap {
         if (!isNaN(o.z) && !isNaN(o.resolvedZ)) {
           po.push(`Z${fmt(o.z + o.resolvedZ)}`);
         }
-        o.update = po.join(" ");
+        o.update = po.join(" ").replace(/\s+/g," ");;
       }
       return o;
     });
