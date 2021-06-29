@@ -14,6 +14,15 @@
       "args": ["cutout.cnc"]
     },
     {
+      "name": "Launch heightmap",
+      "program": "${workspaceFolder}/rpfmap.js",
+      "request": "launch",
+      "skipFiles": ["<node_internals>/**"],
+      "type": "node",
+      "cwd": "${workspaceFolder}/__tests__/data",
+      "args": ["bottom.nc", "height.txt"]
+    },
+    {
       "name": "Launch GER",
       "program": "${workspaceFolder}/ger.js",
       "request": "launch",

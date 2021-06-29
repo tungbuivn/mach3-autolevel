@@ -31,7 +31,8 @@
     "mod": "./mod.js",
     "fixout": "./fixout.js",
     "bed": "./bed.js",
-    "rpf": "./rpf.js"
+    "rpf": "./rpf.js",
+    "rpfmap": "./rpfmap.js"
   },
   "devDependencies": {
     "docs": "file:docs",

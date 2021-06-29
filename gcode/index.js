@@ -3,15 +3,34 @@ import { GCodeData } from "../models/index.js";
 
 export class GCode {
   constructor() {}
+
   loadFile(fileName) {
     var ct = fs.readFileSync(fileName) + "";
     ct = ct.split(/[\r\n]/g);
-    this._lines = ct;
+    // this._lines = ct;
+
+    return this.normalize(
+      new GCodeData(
+        null,
+        null,
+        ct.map((o) => {
+          return { ord: o };
+        })
+      )
+    );
+  }
+  /**
+   *
+   * @param {GCodeData} gcodedata
+   * @returns {GCodeData}
+   */
+  normalize(gcodedata) {
     var z = NaN;
     var x = NaN;
     var y = NaN;
     var mi = { x: 1e6, y: 1e6, z: 1e6 },
       ma = { x: -1e6, y: -1e6, z: -1e6 };
+    var ct = gcodedata.data.map((o) => o.ord);
     var appendZ = ct
       .filter((o) => !o.match(/^\(/))
       .filter((o) => o != "")
@@ -53,7 +72,6 @@ export class GCode {
         a.push(Object.assign({ ord: b }, xyz));
         return a;
       }, []);
-
     return new GCodeData(mi, ma, appendZ);
   }
 }
