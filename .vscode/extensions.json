@@ -4,6 +4,7 @@
     "dbaeumer.vscode-eslint",
     "msjsdiag.debugger-for-chrome",
     "esbenp.prettier-vscode",
-    "ms-vscode.vscode-typescript-tslint-plugin"
+    "ms-vscode.vscode-typescript-tslint-plugin",
+    "firsttris.vscode-jest-runner"
   ]
 }
