@@ -26,11 +26,7 @@ export function pol(v) {
       r = Math.atan(dy / dx) + Math.PI;
     }
   } else {
-    if (dy == 0) {
-      r = Math.PI * 2;
-    } else {
-      r = Math.atan(-dx / dy) + (3 * Math.PI) / 2;
-    }
+    r = Math.atan(-dx / dy) + (3 * Math.PI) / 2;
   }
   return { phi: (r * 180) / Math.PI, radius: Math.sqrt(dx * dx + dy * dy) };
 }

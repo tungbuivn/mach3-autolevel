@@ -1,11 +1,5 @@
 import { pol } from "./pol";
 
-function sq(h) {
-  return h * h;
-}
-function sqrt(h) {
-  return Math.sqrt(h);
-}
 /**
  *
  * @param {{center:import("../index").IPoint2D,radius:number}} circle

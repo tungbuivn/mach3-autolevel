@@ -46,6 +46,7 @@
     "babel-preset-react": "^6.24.1",
     "docs": "file:docs",
     "eslint": "^7.28.0",
+    "eslint-config-defaults": "^9.0.0",
     "jest": "^27.0.5",
     "prettier": "^2.3.1"
   }

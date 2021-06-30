@@ -1,7 +1,8 @@
 import { inteceptCircleLineSeg } from "../autolevel/splitArc";
 
 test("inteceptCircleLineSeg", function () {
-  var rs = inteceptCircleLineSeg(
+  var rs;
+  rs = inteceptCircleLineSeg(
     { center: { x: 1, y: 0 }, radius: 1 },
     { p1: { x: 1, y: 0 }, p2: { x: 1, y: 3 } }
   );
@@ -19,4 +20,26 @@ test("inteceptCircleLineSeg", function () {
     { p1: { x: 1, y: 0 }, p2: { x: 1, y: 0.99 } }
   );
   expect(rs.length == 0).toBe(true);
+  rs = inteceptCircleLineSeg(
+    { center: { x: NaN, y: NaN }, radius: NaN },
+    { p1: { x: 1, y: 0 }, p2: { x: 1, y: 3 } }
+  );
+  expect(rs.length).toBe(0);
+
+  rs = inteceptCircleLineSeg(
+    { center: { x: 1, y: 0 }, radius: 1 },
+    { p1: { x: 0, y: 0 }, p2: { x: 0, y: 0 } }
+  );
+  expect(rs.length == 0).toBe(true);
+
+  rs = inteceptCircleLineSeg(
+    { center: { x: 1, y: 0 }, radius: 1 },
+    { p1: { x: 1, y: -10 }, p2: { x: 1, y: 10 } }
+  );
+  expect(rs.length == 2).toBe(true);
+  rs = inteceptCircleLineSeg(
+    { center: { x: 1, y: 0 }, radius: 1 },
+    { p1: { x: 1, y: -10 }, p2: { x: 1, y: 10 } }
+  );
+  expect(rs.length == 2).toBe(true);
 });
