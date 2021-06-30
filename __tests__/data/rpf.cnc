@@ -1,3 +1,4 @@
+G90 G21 S20000 G17
 M0 (Attach probe wires and clips that need attaching)
 (Initialize probe routine)
 G92 X0 Y0 Z0

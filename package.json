@@ -24,8 +24,7 @@
     "faster-delaunay": "^1.0.0",
     "injection-js": "^2.4.0",
     "intersects": "^2.7.2",
-    "jest-environment-node": "^27.0.6",
-    "point-in-polygon": "^1.1.0"
+    "jest-environment-node": "^27.0.6"
   },
   "moduleDirectories": [
     "node_modules",
@@ -47,8 +46,6 @@
     "babel-preset-react": "^6.24.1",
     "docs": "file:docs",
     "eslint": "^7.28.0",
-    "jasmine": "^3.7.0",
-    "jasmine-console-reporter": "^3.1.0",
     "jest": "^27.0.5",
     "prettier": "^2.3.1"
   }
