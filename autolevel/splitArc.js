@@ -51,28 +51,30 @@ export function inteceptCircleLineSeg(circle, line) {
  *
  * @param {import("../index").IArc} arc
  * @param {import("../index").ILine} line
+ * @returns {import("../index").IPoint2D | null} return intersect point or null
  */
 export function inteceptArcLineSeg(arc, line, ccw) {
+  ccw = !!(ccw || false);
   var cw = !(ccw || false);
 
   var poStart = pol({
     dx: arc.start.x - arc.center.x,
     dy: arc.start.y - arc.center.y,
   });
-  var poEnd = pol({
-    dx: arc.end.x - arc.center.x,
-    dy: arc.end.y - arc.center.y,
-  });
+  // var poEnd = pol({
+  //   dx: arc.end.x - arc.center.x,
+  //   dy: arc.end.y - arc.center.y,
+  // });
   //   if (arc.start.x == arc.end.x && arc.start.y == arc.end.y) {
-  if (cw) {
-    if (poEnd.phi > poStart.phi) {
-      poEnd.phi = poEnd.phi - 360;
-    }
-  } else {
-    if (poEnd.phi < poStart.phi) {
-      poEnd.phi = poEnd.phi + 360;
-    }
-  }
+  // if (cw) {
+  //   if (poEnd.phi > poStart.phi) {
+  //     poEnd.phi = poEnd.phi - 360;
+  //   }
+  // } else {
+  //   if (poEnd.phi < poStart.phi) {
+  //     poEnd.phi = poEnd.phi - 360;
+  //   }
+  // }
   //   }
   var inter = inteceptCircleLineSeg(
     { center: arc.center, radius: poStart.radius },
@@ -81,12 +83,36 @@ export function inteceptArcLineSeg(arc, line, ccw) {
   if (inter.length) {
     var ft = inter.filter((it) => {
       // check point on arc
-      var poInter = pol({ dx: it.x - arc.center.x, dy: it.y - arc.center.y });
-      if (cw) {
-        return poInter.phi <= poStart.phi && poInter.phi >= poEnd.phi;
-      } else {
-        return poInter.phi >= poStart.phi && poInter.phi <= poEnd.phi;
+      var dx = it.x - arc.center.x,
+        dy = it.y - arc.center.y,
+        vax = arc.start.x - arc.center.x,
+        vay = arc.start.y - arc.center.y,
+        vbx = arc.end.x - arc.center.x,
+        vby = arc.end.y - arc.center.y;
+      // var poInter = pol({ dx: dx, dy: dy });
+      //if (s.x * d.y - s.y * d.x >= 0)  && (e.x * d.y - e.y * d.x <= 0)
+      // P  is inside the circle: d(O,P)≤r
+      // P is to the left of OA: OA×OP≥0
+      // P is to the right of OB: OB×OP≤0
+      if (
+        (vax * dy - vay * dx <= 0 && //right to start
+          vbx * dy - vby * dx >= 0 && // left to end
+          cw) ||
+        (vax * dy - vay * dx >= 0 && //left to start
+          vbx * dy - vby * dx <= 0 && // right to end
+          ccw)
+      ) {
+        return true;
       }
+      return false;
+      // if (cw) {
+      //   return poInter.phi <= poStart.phi && poInter.phi >= poEnd.phi;
+      // } else {
+      //   return (
+      //     (poInter.phi >= poStart.phi && poInter.phi <= poEnd.phi) ||
+      //     (poInter.phi + 360 >= poStart.phi && poInter.phi + 360 <= poEnd.phi)
+      //   );
+      // }
     });
     if (ft.length) {
       if (ft.length > 1) {
@@ -96,4 +122,45 @@ export function inteceptArcLineSeg(arc, line, ccw) {
     }
   }
   return null;
+}
+function dist(a, b) {
+  var x = a.x - b.x,
+    y = a.y - b.y;
+  return Math.sqrt(x * x + y * y);
+}
+
+/**
+ *
+ * @param {import("../index").IArc} arc
+ * @param {import("../index").ILine[]} lines
+ * @returns {import("../index").IPoint2D | null} return intersect point or null
+ */
+export function splitArc(arc, lines, ccw) {
+  var arcArray = [arc];
+  var i = 0;
+  while (i < arcArray.length) {
+    var ar = arcArray[i];
+    var idx = arcArray.indexOf(ar);
+    for (var li of lines) {
+      var it = inteceptArcLineSeg(ar, li, ccw);
+      if (dist(it, ar.start) > 1e-6 && dist(it, ar.end) > 1e-6 && it != null) {
+        var newArc1 = Object.assign({}, ar, { end: it });
+        var newArc2 = Object.assign({}, ar, { start: it });
+        var mar = arcArray.map((o, i) => {
+          if (i == idx) {
+            return [newArc1, newArc2];
+          } else {
+            return [o];
+          }
+        });
+        mar = [].concat(...mar);
+        arcArray = mar;
+        i = -1;
+        break;
+      }
+    }
+    i++;
+  }
+
+  return arcArray;
 }
