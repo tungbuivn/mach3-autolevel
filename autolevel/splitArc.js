@@ -45,6 +45,20 @@ function inteceptCircleLineSeg(circle, line){
     }       
     return ret;
 }
+// first check if the point is on a circle with the radius of the arc. 
+// Next check if it is between the start and end angles of the arc.
+function IsPointOnArc(p, a)
+{
+    if (p.Y * p.Y == a.Radius * a.Radius - p.X * p.X)
+    {
+        var t = Math.Acos(p.X / a.Radius);
+        if (t >= a.StartAngle && t <= a.EndAngle)
+        {
+            return true;
+        }
+    }
+    return false;
+}
 function inteceptArcLineSeg(arc,line) {
 
 }
