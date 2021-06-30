@@ -133,7 +133,8 @@ function dist(a, b) {
  *
  * @param {import("../index").IArc} arc
  * @param {import("../index").ILine[]} lines
- * @returns {import("../index").IPoint2D | null} return intersect point or null
+ * @param {boolean} ccw Is counter clock wise
+ * @returns {import("../index").IArc[] | null} return intersect point or null
  */
 export function splitArc(arc, lines, ccw) {
   var arcArray = [arc];
