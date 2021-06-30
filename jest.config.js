@@ -2,8 +2,10 @@
 // import env from "jest-environment-node";
 
 export default {
+  verbose: true,
   // testEnvironment: "./vscode-environment.mjs",
   //testEnvironment: "node",
+
   moduleDirectories: ["./node_modules"],
   modulePaths: ["<rootDir>"],
   transform: {

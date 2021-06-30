@@ -44,5 +44,12 @@
   },
   "jestrunner.jestCommand": "node --experimental-vm-modules node_modules/jest/bin/jest.js ",
   // "jestrunner.debugOptions": { "args": "--experimental-vm-modules" },
+  // "jestrunner.jestPath": "--experimental-vm-modules node_modules/jest/bin/jest.js",
+  "jestrunner.debugOptions": {
+    "runtimeArgs": ["--experimental-vm-modules"]
+    //   "args": ["--no-cache", "--experimental-vm-modules"],
+    //   "sourcemaps": "inline",
+    //   "disableOptimisticBPs": true
+  },
   "explorerExclude.backup": null
 }

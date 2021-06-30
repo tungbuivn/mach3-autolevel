@@ -5,5 +5,5 @@ test("test gen file", () => {
   //   var { RpfGenerator, inst } = await Promise.all(all);
   expect(inst);
   var svc = inst.get(RpfGenerator);
-  expect(svc);
+  expect(svc).toBeInstanceOf(RpfGenerator);
 });
