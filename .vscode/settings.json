@@ -12,6 +12,7 @@
     "**/obj": true,
     "**/bundle": true,
     "**/pre-build": true,
+    "node_modules": true,
 
     "Wss.Baomoi.LoadTest": true,
     "Wss.Baomoi.DataConverter": true,
@@ -41,5 +42,7 @@
     "**/bower_components": true,
     "**/*.code-search": true
   },
+  "jestrunner.jestCommand": "node --experimental-vm-modules node_modules/jest/bin/jest.js ",
+  // "jestrunner.debugOptions": { "args": "--experimental-vm-modules" },
   "explorerExclude.backup": null
 }

@@ -6,6 +6,7 @@
 *.user
 *.userosscache
 *.sln.docstates
+node_modules/
 /\.cache/
 #build-bm/.cache/
 # User-specific files (MonoDevelop/Xamarin Studio)
