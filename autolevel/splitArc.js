@@ -4,6 +4,12 @@ function sq(h) {
 function sqrt(h) {
     return Math.sqrt(h);
 }
+/**
+ * 
+ * @param {{center:{x:number,y:number},radius:number}} circle 
+ * @param {{p1:{x:number;y:number},p2:{x:number,y:number}}} line 
+ * @returns 
+ */
 function inteceptCircleLineSeg(circle, line){
     var a, b, c, d, u1, u2, ret, retP1, retP2, v1, v2;
     v1 = {};
@@ -38,4 +44,7 @@ function inteceptCircleLineSeg(circle, line){
         ret[ret.length] = retP2;
     }       
     return ret;
+}
+function inteceptArcLineSeg(arc,line) {
+
 }
