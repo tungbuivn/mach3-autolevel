@@ -6,6 +6,7 @@ import { Files } from "../Files.js";
 import { GCode } from "../gcode/index.js";
 import { splitSegment } from "./splitSeg.js";
 import { resolveHeight } from "./resolveHeight.js";
+import { splitArc } from "./splitArc.js";
 function fmt(v) {
   return v.toFixed(4);
 }
@@ -57,14 +58,14 @@ export class RefactorHeightMap {
       }
       a[counter] = a[counter] || { idx: [], data: [] };
       //   a[counter].idx.push(i);
-      if (o.ord.match(/G01/)) {
+      if (o.ord.match(/G0?[123]/i)) {
         o.idx = i;
         a[counter].data.push(o);
       }
       return a;
     }, []);
     var tri = this._delaunayPlane.loadPointsFromFile(heightmapFile);
-    
+
     this.generateTriangleGcode([].concat(tri.triangles));
     var lines = [].concat(
       ...tri.triangles.map((o) => {
@@ -80,6 +81,12 @@ export class RefactorHeightMap {
         }, []);
       })
     );
+    var linesMap = lines.map((o) => {
+      return {
+        p1: o[0],
+        p2: o[1],
+      };
+    });
     var mpe = seglist
       .filter((o) => o.data.length > 0)
       .reduce((a, b, i) => {
@@ -89,8 +96,38 @@ export class RefactorHeightMap {
             last = y;
             return x;
           }
-          var spl = splitSegment(last, y, ...lines);
-          x.push({ from: last, to: y, spl });
+          var type;
+          if (y.ord.match(/^G0?1/gi)) {
+            type = 1;
+          } else if (y.ord.match(/^G0?[23]/gi)) {
+            type = 2;
+          }
+
+          var spl;
+          if (type == 1) {
+            spl = splitSegment(last, y, ...lines).map((o) => {
+              o.idx = y.idx;
+              return o;
+            });
+          } else if (type == 2) {
+            spl = splitArc(
+              Object.assign({}, y, {
+                center: y.center,
+                start: y.start,
+                end: y,
+              }),
+              linesMap,
+              y.ccw
+            );
+            if (spl.length > 1) {
+              spl = spl.map((o) => {
+                o.comment = "              ;auto split arc";
+                return o;
+              });
+            }
+          }
+
+          x.push({ from: last, to: y, spl, type: type });
           last = y;
           return x;
         }, []);
@@ -98,41 +135,65 @@ export class RefactorHeightMap {
         return a;
       }, []);
     // join segments
-    var lastIdx = undefined;
     var merged = mpe.map((a) => {
       var data = [].concat(
         ...a.map((x, i) => {
           var d = x.spl;
           if (i > 0) {
-            d.shift();
+            // chi go bo diem dau neu la line
+            if (x.type == 1) {
+              d.shift();
+            }
           }
           return d;
         })
       );
       return data;
     });
-    var joinData = merged
-      .reduce((a, b, i) => {
-        var from = b[0].idx;
-        var to = b[b.length - 1].idx;
-        for (var j = from; j <= to; j++) {
-          a[j] = null;
-        }
-        a[from] = b;
-        //   var seg1 = a.slice(0, from);
-        //   var seg2 = a.slice(to + 1);
-        return a;
-      }, [].concat(code.data))
-      .map((o) => {
-        if (o && o.length) {
-          return [].concat(...o);
-        }
-        return [o];
-      });
+
+    var removeLines = [].concat(code.data);
+    [].concat(...merged).forEach((e) => {
+      removeLines[e.idx] = [];
+      // removeLines[e.to.idx] = [];
+    });
+    [].concat(...merged).forEach((e) => {
+      removeLines[e.idx].push(e);
+    });
+    removeLines = removeLines.reduce((a, b) => {
+      if (b.length) {
+        a = a.concat(b);
+      } else {
+        a.push(b);
+      }
+      return a;
+    }, []);
+
+    var joinData = removeLines;
+    // merged
+    //   .reduce((a, b, i) => {
+    //     var from = b[0].idx;
+    //     var to = b[b.length - 1].idx;
+    //     for (var j = from; j <= to; j++) {
+    //       a[j] = null;
+    //     }
+    //     a[from] = b;
+    //     //   var seg1 = a.slice(0, from);
+    //     //   var seg2 = a.slice(to + 1);
+    //     return a;
+    //   }, [].concat(code.data))
+    //   .map((o) => {
+    //     if (o && o.length) {
+    //       return [].concat(...o);
+    //     }
+    //     return [o];
+    //   });
     joinData = []
       .concat(...joinData)
       .filter((o) => o != null)
-      .map((o) => {
+      .map((o, i) => {
+        if (i == 62) {
+          o = o;
+        }
         if (o.ord) {
           if (typeof o.resolvedZ == "undefined" && !isNaN(o.x) && !isNaN(o.y)) {
             for (var tr of tri.triangles) {
@@ -145,6 +206,7 @@ export class RefactorHeightMap {
           }
           return o;
         }
+
         o.ord = `G01 X${fmt(o.x)} Y${fmt(o.y)} Z${fmt(o.z)}`;
 
         return o;
@@ -152,7 +214,7 @@ export class RefactorHeightMap {
     // map height
     joinData = joinData.map((o) => {
       o.ord = o.ord.replace(/([XYZ])/gi, " $1");
-      o.update = o.ord.replace(/\s+/g," ");
+      o.update = o.ord.replace(/\s+/g, " ");
       if (isNaN(o.z)) {
         return o;
       }
@@ -173,18 +235,19 @@ export class RefactorHeightMap {
           .join(" ");
       } else {
         var po = [o.ord];
-        if (!isNaN(o.z) && !isNaN(o.resolvedZ)) {
+        if (!isNaN(o.z) && !isNaN(o.resolvedZ) && o.ord.match(/^G/i)) {
           po.push(`Z${fmt(o.z + o.resolvedZ)}`);
         }
-        o.update = po.join(" ").replace(/\s+/g," ");;
+        o.update = po.join(" ").replace(/\s+/g, " ");
       }
-      o.update=`${o.update}${o.comment||""}`;
+      o.update = `${o.update}${o.comment || ""}`;
       return o;
     });
     var dir = path.dirname(gcodeFile).replace(/\\/gi, "/");
     var file = path.basename(gcodeFile);
     var outFile = `${dir}/almod-${file}`;
-    joinData.unshift({update:`(This GCode script was designed to adjust the Z height of a CNC machine according)
+    joinData.unshift({
+      update: `(This GCode script was designed to adjust the Z height of a CNC machine according)
 (to the minute variations in the surface height in order to achieve a better result in the milling/etching process)
 (This script is the output of AutoLevellerAE, 0.9.5u2 Changeset: ...2d0387 @ http://autoleveller.co.uk)
 (Author: James Hawthorne PhD. File creation date: 26-06-2021 10:06)
@@ -200,7 +263,8 @@ G31 Z-100 F50 (Probe to a maximum of the specified probe height at the specified
 G92 Z0 (Touch off Z to 0 once contact is made)
 G0 Z5
 M0 (Detach any clips used for probing)
-    `})
+    `,
+    });
     fs.writeFileSync(outFile, joinData.map((o) => o.update).join("\n"));
     console.log(`Creating output file ${outFile}`);
   }

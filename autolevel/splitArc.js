@@ -1,4 +1,5 @@
-import { pol } from "./pol";
+import { dist } from "./dist.js";
+import { pol } from "./pol.js";
 
 /**
  *
@@ -42,7 +43,13 @@ export function inteceptCircleLineSeg(circle, line) {
     // second add point if on the line segment
     retP2.x = line.p1.x + v1.x * u2;
     retP2.y = line.p1.y + v1.y * u2;
-    ret[ret.length] = retP2;
+    if (typeof retP1.x != "undefined") {
+      if (dist(retP1, retP2) >= 1e-6) {
+        ret[ret.length] = retP2;
+      }
+    } else {
+      ret[ret.length] = retP2;
+    }
   }
   return ret;
 }
@@ -123,11 +130,6 @@ export function inteceptArcLineSeg(arc, line, ccw) {
   }
   return null;
 }
-function dist(a, b) {
-  var x = a.x - b.x,
-    y = a.y - b.y;
-  return Math.sqrt(x * x + y * y);
-}
 
 /**
  *
@@ -138,15 +140,53 @@ function dist(a, b) {
  */
 export function splitArc(arc, lines, ccw) {
   var arcArray = [arc];
+  var dup = [arc.start, arc.end];
   var i = 0;
   while (i < arcArray.length) {
     var ar = arcArray[i];
     var idx = arcArray.indexOf(ar);
     for (var li of lines) {
       var it = inteceptArcLineSeg(ar, li, ccw);
-      if (dist(it, ar.start) > 1e-6 && dist(it, ar.end) > 1e-6 && it != null) {
+      if (
+        it != null &&
+        dist(it, ar.start) > 1e-6 &&
+        dist(it, ar.end) > 1e-6 &&
+        dup.filter((dp) => dist(it, dp) < 1e-6).length == 0
+      ) {
+        dup.push(it);
+
         var newArc1 = Object.assign({}, ar, { end: it });
         var newArc2 = Object.assign({}, ar, { start: it });
+        if (typeof ar.ord != "undefined") {
+          newArc1.ord = newArc1.ord
+            .replace(/[XY].[^\s]*/gi, " ")
+            .replace(/\s+/, " ");
+          newArc2.ord = newArc2.ord
+            .replace(/[XY].[^\s]*/gi, " ")
+            .replace(/\s+/, " ");
+          var ns = newArc1.ord.split(" ").filter((o) => !o.match(/Z/gi));
+          ns[1] = `X${it.x} Y${it.y} Z${arc.z} ${ns[1]}`;
+          newArc1.ord = ns.filter((o) => o != "").join(" ");
+          ns = newArc2.ord.split(" ").filter((o) => !o.match(/Z/gi));
+          ns[1] = `X${newArc2.end.x} Y${newArc2.end.y} Z${arc.z} ${ns[1]}`;
+
+          newArc2.ord = ns.filter((o) => o != "").join(" ");
+          // recalculate center relative to start point, only newarc2 being effect
+          //it.x+vx=center
+          var cx = newArc1.center.x - it.x;
+          var cy = newArc1.center.y - it.y;
+          newArc2.ord = newArc2.ord
+            .replace(/[IJ].[^\s]*/gi, "\t")
+            .replace(/\t+/, `I${cx} J${cy}`) //replace only one
+            .replace(/\t/g, " ") // remover other
+            .trim();
+
+          // Object.assign(newArc1, it); //override xy
+          // Object.assign(newArc1.end, it); //override xy
+          // Object.assign(newArc2.start, it); //override xy
+          // Object.assign(newArc2, newArc2.end); //override xy
+        }
+
         var mar = arcArray.map((o, i) => {
           if (i == idx) {
             return [newArc1, newArc2];
@@ -162,6 +202,10 @@ export function splitArc(arc, lines, ccw) {
     }
     i++;
   }
+  arcArray = arcArray.map((o) => {
+    Object.assign(o, { x: o.end.x, y: o.end.y });
+    return o;
+  });
 
   return arcArray;
 }
