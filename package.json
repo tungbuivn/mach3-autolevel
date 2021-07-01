@@ -46,6 +46,7 @@
     "babel-preset-env": "^1.7.0",
     "babel-preset-react": "^6.24.1",
     "docs": "file:docs",
+    "electron": "^13.1.4",
     "eslint": "^7.28.0",
     "eslint-config-defaults": "^9.0.0",
     "jest": "^27.0.5",

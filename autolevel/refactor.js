@@ -47,6 +47,22 @@ export class RefactorHeightMap {
       return `G00 Z5\nG00 X${o[0].x}Y${o[0].y}\n${rs}`;
     });
     fs.writeFileSync("./tri.nc", str.join("\n"));
+    // generate autolisp file to test
+
+    str = [].concat(triangles).map((o) => {
+      
+      
+      var rs =[`(command "3dface" `].concat( o
+        .map((a) => {
+          return `"${a.x},${a.y},${a.z}"`;
+        })
+        ,[`"")`]
+        )
+        .join(" ");
+      return `${rs}`;
+    });
+    fs.writeFileSync("./tri.lsp", str.join("\n"));
+
   }
   run(gcodeFile, heightmapFile) {
     var code = this._gcode.loadFile(gcodeFile);
@@ -224,9 +240,14 @@ export class RefactorHeightMap {
           .replace(/z/gi, " Z")
           .split(" ")
           .reduce((a, b) => {
-            if (b.match(/z/gi)) {
+            if (b.match(/z/gi) ) {
               b = b.replace(/z/gi, "");
-              b = `Z${fmt(o.z + o.resolvedZ)}`;
+              if (o.z<0) {
+                b = `Z${fmt(o.z + o.resolvedZ)}`;
+              } else {
+                b = `Z${fmt(o.z )}`;
+              }
+              
             }
             a.push(b);
             return a;
@@ -235,8 +256,13 @@ export class RefactorHeightMap {
           .join(" ");
       } else {
         var po = [o.ord];
-        if (!isNaN(o.z) && !isNaN(o.resolvedZ) && o.ord.match(/^G/i)) {
-          po.push(`Z${fmt(o.z + o.resolvedZ)}`);
+        if (!isNaN(o.z)  && !isNaN(o.resolvedZ) && o.ord.match(/^G/i)) {
+          if (o.z<0) {
+            po.push(`Z${fmt(o.z + o.resolvedZ)}`);
+          } else {
+            po.push(`Z${fmt(o.z)}`);
+          }
+          
         }
         o.update = po.join(" ").replace(/\s+/g, " ");
       }
