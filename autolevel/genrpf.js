@@ -3,6 +3,7 @@ import { Inject, Injectable, ReflectiveInjector } from "injection-js";
 import { Config } from "../config2.js";
 
 import { GCode } from "../gcode/index.js";
+import { fmt } from "./fmt.js";
 // var di = require("injection-js");
 
 // var Http = di.Class({
@@ -133,8 +134,8 @@ export class RpfGenerator {
     function GenCNC() {
       return po
         .map((o) => {
-          return `G0 Z2
-G1 X${o.x} Y${o.y} ${probeSpeed}
+          return `G0 Z5
+G1 X${fmt( o.x)} Y${fmt(o.y)} ${probeSpeed}
 G31 Z-1 F50`;
         })
         .join("\n");
@@ -152,7 +153,7 @@ G92 Z0 (Touch off Z to 0 once contact is made)
 G0 Z2 (Move Z to above the contact point)
 G31 Z-1 F25 (Repeat at a more accurate slower rate)
 G92 Z0
-G0 Z2
+G0 Z5
 
 
 M40 (Begins a probe log file, when the window appears, enter a name for the log file such as "RawProbeLog.txt")

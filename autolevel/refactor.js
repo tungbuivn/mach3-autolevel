@@ -8,10 +8,9 @@ import { splitSegment } from "./splitSeg.js";
 import { resolveHeight } from "./resolveHeight.js";
 import { splitArc } from "./splitArc.js";
 import { inst } from "../init2.js";
+import { fmt } from "./fmt.js";
 
-function fmt(v) {
-  return v.toFixed(4);
-}
+
 export class RefactorHeightMap {
   static get parameters() {
     return [new Inject(Files), new Inject(DelaunayPlane)];
@@ -24,6 +23,7 @@ export class RefactorHeightMap {
    * @param {DelaunayPlane} delaunayPlane
    */
   constructor(files, delaunayPlane) {
+    
     this._gcode = inst.resolveAndInstantiate(GCode);
     /**
      * @type {Files}
