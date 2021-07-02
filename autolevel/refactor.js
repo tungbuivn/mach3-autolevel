@@ -7,12 +7,14 @@ import { GCode } from "../gcode/index.js";
 import { splitSegment } from "./splitSeg.js";
 import { resolveHeight } from "./resolveHeight.js";
 import { splitArc } from "./splitArc.js";
+import { inst } from "../init2.js";
+
 function fmt(v) {
   return v.toFixed(4);
 }
 export class RefactorHeightMap {
   static get parameters() {
-    return [new Inject(Files), new Inject(GCode), new Inject(DelaunayPlane)];
+    return [new Inject(Files), new Inject(DelaunayPlane)];
   }
 
   /**
@@ -21,15 +23,16 @@ export class RefactorHeightMap {
    * @param {GCode} gcode
    * @param {DelaunayPlane} delaunayPlane
    */
-  constructor(files, gcode, delaunayPlane) {
+  constructor(files, delaunayPlane) {
+    this._gcode = inst.resolveAndInstantiate(GCode);
     /**
      * @type {Files}
      */
     this._files = files;
-    /**
-     * @type {GCode}
-     */
-    this._gcode = gcode;
+    // /**
+    //  * @type {GCode}
+    //  */
+    // this._gcode = gcode;
     /**
      * @type {DelaunayPlane}
      */

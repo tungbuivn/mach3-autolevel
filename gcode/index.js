@@ -4,11 +4,11 @@ import { GCodeData } from "../models/index.js";
 export class GCode {
   constructor() {}
 
-  loadFile(fileName) {
-    var ct = fs.readFileSync(fileName) + "";
-    ct = ct.replace(/[\r\n]/g, "\t").split(/\t+/g);
-    // this._lines = ct;
-
+  loadFromStr(str) {
+    var ct = str
+      .replace(/[\r\n]/g, "\0")
+      .split(/\0+/g)
+      .map((o) => o.replace(/\0+/g, "").replace(/\s+/g, " "));
     return this.normalize(
       new GCodeData(
         null,
@@ -18,6 +18,12 @@ export class GCode {
         })
       )
     );
+  }
+  loadFile(fileName) {
+    var ct = fs.readFileSync(fileName) + "";
+
+    // this._lines = ct;
+    return this.loadFromStr(ct);
   }
   extractNum(str, char) {
     var re = new RegExp(char, "gi");

@@ -15,6 +15,7 @@ const cutoutFeedRate = 600;
 const cutoutToolDiameter = 1.5;
 
 const spindleSpeed = 15000;
+const probeSpeed = 600;
 
 export class Config {
   constructor() {
@@ -31,6 +32,7 @@ export class Config {
     this.cutoutFeedRate = cutoutFeedRate;
     this.cutoutToolDiameter = cutoutToolDiameter;
     this.spindleSpeed = spindleSpeed;
+    this.probeSpeed = probeSpeed;
   }
 }
 // module.exports = Config;

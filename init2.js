@@ -21,7 +21,7 @@ var inst = di.ReflectiveInjector.resolveAndCreate([
 ]);
 
 /**
- * @type {import(".").Inst}
+ * @type {di.ReflectiveInjector}
  */
 export var inst;
 //module.exports = inst;

@@ -1,6 +1,7 @@
 import * as fs from "fs";
 import { Inject, Injectable, ReflectiveInjector } from "injection-js";
 import { Config } from "../config2.js";
+
 import { GCode } from "../gcode/index.js";
 // var di = require("injection-js");
 
@@ -14,7 +15,11 @@ export class RpfGenerator {
   }
 
   constructor(config, gcode) {
-    Object.assign(this, { config, gcode });
+    // Object.assign(this, { config, gcode });
+    /**
+     * @type {Config}
+     */
+    this.config = config;
     /**
      * @type {GCode}
      */
@@ -123,12 +128,13 @@ export class RpfGenerator {
         return ar;
       })
     );
-    var dist = Math.sqrt(dx * dx + dy * dy);
+    // var dist = Math.sqrt(dx * dx + dy * dy);
+    var probeSpeed = this.config.probeSpeed;
     function GenCNC() {
       return po
         .map((o) => {
           return `G0 Z2
-G1 X${o.x} Y${o.y} F600
+G1 X${o.x} Y${o.y} ${probeSpeed}
 G31 Z-1 F50`;
         })
         .join("\n");
@@ -139,7 +145,7 @@ M0 (Attach probe wires and clips that need attaching)
 (Initialize probe routine)
 G92 X0 Y0 Z0
 G0 Z5 (Move clear of the board first)
-G1 X${po[0].x} Y${po[0].y} F600 (Move to bottom left corner)
+G1 X${po[0].x} Y${po[0].y} ${probeSpeed} (Move to bottom left corner)
 G0 Z2 (Quick move to probe clearance height)
 G31 Z-1 F50 (Probe to a maximum of the specified probe height at the specified feed rate)
 G92 Z0 (Touch off Z to 0 once contact is made)

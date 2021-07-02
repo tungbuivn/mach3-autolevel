@@ -5,6 +5,7 @@ import { Config } from "../config2.js";
 import { Files } from "../Files.js";
 import { Hole } from "./hole.js";
 import { Inject } from "injection-js";
+
 export class Gerber {
   static get parameters() {
     return [new Inject(Config), new Inject(Files), new Inject(Hole)];
@@ -92,8 +93,9 @@ new
 open_gerber ${boardOutline} -outname cutout
 open_gerber ${bottomLayer} -outname bottom_layer
 mirror bottom_layer -axis Y -box cutout
-isolate bottom_layer -dia ${bottomLayerToolDiameter} -overlap ${bottomLayerToolDiameter / 3
-        } -passes ${bottomLayerMillingCount} -combine 1 -outname bottom_layer_iso
+isolate bottom_layer -dia ${bottomLayerToolDiameter} -overlap ${
+        bottomLayerToolDiameter / 3
+      } -passes ${bottomLayerMillingCount} -combine 1 -outname bottom_layer_iso
 cncjob bottom_layer_iso -z_cut -0.1 -z_move ${zSafe} -feedrate ${bottomLayerFeedRate} -tooldia ${bottomLayerToolDiameter} -spindlespeed ${spindleSpeed} -multidepth false -depthperpass 0.1 -outname bottom_layer_cnc
 write_gcode bottom_layer_cnc ${dir}/bottom_layer.cnc
 #> [-box <nameOfBox> | -dist <number>]
