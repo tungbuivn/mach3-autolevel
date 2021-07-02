@@ -14,7 +14,7 @@ const cutoutDepthPerpass = 0.5;
 const cutoutFeedRate = 600;
 const cutoutToolDiameter = 1.5;
 
-const spindleSpeed = 12000;
+const spindleSpeed = 15000;
 
 export class Config {
   constructor() {

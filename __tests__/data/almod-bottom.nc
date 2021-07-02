@@ -79,5 +79,5 @@ G03 X3.5 Y2.5 Z-0.3500 I-0.8660254037844384 J0.5              ;auto split arc
 G03 X3.3660254037844384 Y3 Z-0.3830 I-1 J0              ;auto split arc
 G03 X3 Y3.3660254037844384 Z-0.2000 I-0.8660254037844384 J-0.5              ;auto split arc
 G03 X2.5 Y3.5 Z-0.1000 I-0.5 J-0.8660254037844384              ;auto split arc
-G03 X2.5 Y5 Z-0.1000 I0 J-1              ;auto split arc
+G03 X2.5 Y5 Z-0.3000 I0 J-1              ;auto split arc
 M05

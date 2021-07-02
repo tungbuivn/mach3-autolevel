@@ -15,17 +15,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@jingwood/graphics-math": "^1.1.18",
-    "bottlejs": "^2.0.0",
-    "d3-delaunay": "^6.0.2",
     "delaunator": "^5.0.0",
-    "delaunay-triangulate": "^1.1.6",
-    "esm": "^3.2.25",
     "express": "^4.17.1",
-    "faster-delaunay": "^1.0.0",
-    "injection-js": "^2.4.0",
-    "intersects": "^2.7.2",
-    "jest-environment-node": "^27.0.6"
+    "injection-js": "^2.4.0"
   },
   "moduleDirectories": [
     "node_modules",
@@ -42,11 +34,6 @@
   "devDependencies": {
     "@babel/core": "^7.14.6",
     "@babel/preset-env": "^7.14.7",
-    "babel-jest": "^27.0.6",
-    "babel-preset-env": "^1.7.0",
-    "babel-preset-react": "^6.24.1",
-    "docs": "file:docs",
-    "electron": "^13.1.4",
     "eslint": "^7.28.0",
     "eslint-config-defaults": "^9.0.0",
     "jest": "^27.0.5",

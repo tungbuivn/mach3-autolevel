@@ -89,12 +89,12 @@ export class RpfGenerator {
       dy = ma.y - mi.y,
       countSegX = Math.floor(dx / 10),
       countSegY = Math.floor(dy / 10);
-            if (countSegX==0) countSegX=1;
-      if (countSegY==0) countSegY=1;
-    
-    var  lenX = dx / countSegX,
+    if (countSegX == 0) countSegX = 1;
+    if (countSegY == 0) countSegY = 1;
+
+    var lenX = dx / countSegX,
       lenY = dy / countSegY;
-    
+
     var po = [].concat(
       ...Array.from(new Array(countSegY + 1)).map((o, j) => {
         var ar = [].concat(
@@ -128,7 +128,7 @@ export class RpfGenerator {
       return po
         .map((o) => {
           return `G0 Z2
-G1 X${o.x} Y${o.y} F800
+G1 X${o.x} Y${o.y} F600
 G31 Z-1 F50`;
         })
         .join("\n");
@@ -139,7 +139,7 @@ M0 (Attach probe wires and clips that need attaching)
 (Initialize probe routine)
 G92 X0 Y0 Z0
 G0 Z5 (Move clear of the board first)
-G1 X${po[0].x} Y${po[0].y} F800 (Move to bottom left corner)
+G1 X${po[0].x} Y${po[0].y} F600 (Move to bottom left corner)
 G0 Z2 (Quick move to probe clearance height)
 G31 Z-1 F50 (Probe to a maximum of the specified probe height at the specified feed rate)
 G92 Z0 (Touch off Z to 0 once contact is made)
