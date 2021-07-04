@@ -2,6 +2,17 @@
 
 import fs from "fs";
 import * as path from "path";
+import { GCode } from "./gcode/index.js";
+
+
+
+import { inst as di } from "./init2.js";
+
+// console.log(di.get(require("./autolevel/genrpf")));
+/**
+ * @type {GCode}
+ */
+var gcode = di.get(GCode);
 // var fs = require("fs");
 // var path = require("path");
 var file = process.argv[2];
@@ -9,7 +20,9 @@ var cutDepth = "0.5";
 var prevIsZ5 = false;
 // d:\0cnc\app\top.nc
 var str = fs.readFileSync(file) + "";
-var org = str.split("\n");
+var gdata=gcode.loadFromStr(str);
+var org = gdata.data.map(o=>o.ord);//str.split("\n");
+// console.log(org)
 var maxHeight = org
   .filter((s) => !s.match(/^\(/))
   .map((s) => s.match(/Z(\d+)/))
@@ -29,6 +42,7 @@ for (var frate of org) {
     break;
   }
 }
+var reMaxHeight=new RegExp(`Z${maxHeight}`,"gi");
 var newArr = org.map((s, idx) => {
   s = s.replace(/\r/, "");
   var z5 = false;
@@ -44,11 +58,18 @@ var newArr = org.map((s, idx) => {
     s == `Z${maxHeight}` ||
     s == `G1 Z${maxHeight}` ||
     s == `Z${maxHeight}.` ||
-    s == `G1 Z${maxHeight}.`
+    s == `G1 Z${maxHeight}.` || s.match(reMaxHeight)
   ) {
     prevIsZ5 = true;
-    if (s == `Z${maxHeight}`) {
-      ar.push(`G0 ${s}\n`);
+    if ((s == `Z${maxHeight}`)|| s.match(reMaxHeight)) {
+      // console.log(s)
+      if (!s.match(/^G43/i)) {
+        s=s.replace(/^G.[^\s]*/i,"").split(" ").filter(o=>!o.match(/^F/gi)).join(" ")
+        ar.push(`G0 ${s}\n`);
+      } else {
+        ar.push(s+"\n");
+      }
+      
     } else {
       ar.push(`G0 Z${maxHeight}\n`);
     }
@@ -62,8 +83,9 @@ var newArr = org.map((s, idx) => {
   } else if (s == "Z1" || s == "Z1.") {
     ar.push(`G1 ${s} F${feedRate}\n`);
   } else {
-    if (z5 && (s[0] == "X" || s[0] == "Y" || s[0] == "Z")) {
-      ar.push(`G0 ${s}\n`);
+    if (z5 &&(s[0] == "G" || s[0] == "X" || s[0] == "Y" || s[0] == "Z")) {
+      var re=s.replace(/^G.[^\s]*/,"").split(" ").filter(o=>!o.match(/^F/gi)).join(" ")
+      ar.push(`G0 ${re}\n`);
     } else {
       ar.push(`${s}\n`);
     }

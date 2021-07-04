@@ -46,6 +46,8 @@ export class GCode {
     var z = NaN;
     var x = NaN;
     var y = NaN;
+    var lastCommand="";
+    var lastFeed="";
     var last = { x: NaN, y: NaN, z: NaN };
     var mi = { x: 1e6, y: 1e6, z: 1e6 },
       ma = { x: -1e6, y: -1e6, z: -1e6 };
@@ -55,6 +57,12 @@ export class GCode {
       .filter((o) => o != "")
       .reduce((a, b) => {
         var c = b + " ";
+        if ((lastCommand!="") && (c.match(/^[XY]/gi))) {
+          c=lastCommand+" "+c;
+        }
+        if (!c.match(/F/) && lastFeed!="") {
+          c=c+" "+lastFeed;
+        }
         var xyz = {};
         c = c
           .replace(/([XYZIJR])/gi, " $1")
@@ -121,6 +129,13 @@ export class GCode {
           z: Math.max(ma.z, xyz.z || -1e6),
         };
         a.push(Object.assign({ ord: c }, xyz));
+        if (c.match(/^G/i)) {
+          lastCommand=c.split(/\s/)[0];
+        }
+        if (c.match(/\sF/i)) {
+          lastFeed=c.split(/\s/gi).filter(o=>o.match(/^F/gi))[0];
+        }
+        
         return a;
       }, []);
     return new GCodeData(mi, ma, appendZ);

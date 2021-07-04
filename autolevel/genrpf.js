@@ -123,6 +123,7 @@ export class RpfGenerator {
             );
           })
         );
+        
         if ((j + 1) % 2 == 0) {
           ar.reverse();
         }
@@ -135,7 +136,7 @@ export class RpfGenerator {
       return po
         .map((o) => {
           return `G0 Z5
-G1 X${fmt( o.x)} Y${fmt(o.y)} ${probeSpeed}
+G1 X${fmt( o.x)} Y${fmt(o.y)} F${probeSpeed}
 G31 Z-1 F50`;
         })
         .join("\n");
@@ -144,11 +145,10 @@ G31 Z-1 F50`;
     var out = `G90 G21 S20000 G17
 M0 (Attach probe wires and clips that need attaching)
 (Initialize probe routine)
-G92 X0 Y0 Z0
-G0 Z5 (Move clear of the board first)
-G1 X${po[0].x} Y${po[0].y} ${probeSpeed} (Move to bottom left corner)
-G0 Z2 (Quick move to probe clearance height)
-G31 Z-1 F50 (Probe to a maximum of the specified probe height at the specified feed rate)
+
+G1 X${po[0].x} Y${po[0].y} F${probeSpeed} (Move to bottom left corner)
+
+G31 Z-99 F50 (Probe to a maximum of the specified probe height at the specified feed rate)
 G92 Z0 (Touch off Z to 0 once contact is made)
 G0 Z2 (Move Z to above the contact point)
 G31 Z-1 F25 (Repeat at a more accurate slower rate)
@@ -167,7 +167,7 @@ M0 (Detach any clips used for probing)
 M30
 `;
     console.info("Generate file ...");
-    fs.writeFileSync("./rpf.cnc", out);
+    fs.writeFileSync("./rpf.nc", out);
     //   console.log(appendZ);
   }
 }

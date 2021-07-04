@@ -1,4 +1,5 @@
 import { dist } from "./dist.js";
+import { fmt } from "./fmt.js";
 import { pol } from "./pol.js";
 
 /**
@@ -122,9 +123,14 @@ export function inteceptArcLineSeg(arc, line, ccw) {
       // }
     });
     if (ft.length) {
-      if (ft.length > 1) {
-        throw new Error("invalid alogitmic intersect");
-      }
+      // if (ft.length > 1) {
+      //   // get min distance to start point
+      //   console.log(ft,arc,line)
+      //   throw new Error("invalid alogitmic intersect");
+      // }
+      ft=ft.sort((a,b)=>{
+        return dist(a,arc.start)<dist(b,arc.start)?1:-1;
+      })
       return ft[0];
     }
   }
@@ -149,8 +155,8 @@ export function splitArc(arc, lines, ccw) {
       var it = inteceptArcLineSeg(ar, li, ccw);
       if (
         it != null &&
-        dist(it, ar.start) > 1e-6 &&
-        dist(it, ar.end) > 1e-6 &&
+        dist(it, ar.start) > 1e-2 &&
+        dist(it, ar.end) > 1e-2 &&
         dup.filter((dp) => dist(it, dp) < 1e-6).length == 0
       ) {
         dup.push(it);
@@ -165,10 +171,10 @@ export function splitArc(arc, lines, ccw) {
             .replace(/[XY].[^\s]*/gi, " ")
             .replace(/\s+/, " ");
           var ns = newArc1.ord.split(" ").filter((o) => !o.match(/Z/gi));
-          ns[1] = `X${it.x} Y${it.y} Z${arc.z} ${ns[1]}`;
+          ns[1] = `X${fmt(it.x)} Y${fmt(it.y)} Z${fmt(arc.z)} ${ns[1]}`;
           newArc1.ord = ns.filter((o) => o != "").join(" ");
           ns = newArc2.ord.split(" ").filter((o) => !o.match(/Z/gi));
-          ns[1] = `X${newArc2.end.x} Y${newArc2.end.y} Z${arc.z} ${ns[1]}`;
+          ns[1] = `X${fmt(newArc2.end.x)} Y${fmt(newArc2.end.y)} Z${fmt(arc.z)} ${ns[1]}`;
 
           newArc2.ord = ns.filter((o) => o != "").join(" ");
           // recalculate center relative to start point, only newarc2 being effect
@@ -177,7 +183,7 @@ export function splitArc(arc, lines, ccw) {
           var cy = newArc1.center.y - it.y;
           newArc2.ord = newArc2.ord
             .replace(/[IJ].[^\s]*/gi, "\t")
-            .replace(/\t+/, `I${cx} J${cy}`) //replace only one
+            .replace(/\t+/, `I${fmt(cx)} J${fmt(cy)}`) //replace only one
             .replace(/\t/g, " ") // remover other
             .trim();
 
