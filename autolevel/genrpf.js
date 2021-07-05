@@ -1,4 +1,5 @@
 import * as fs from "fs";
+import path from 'path';
 import { Inject, Injectable, ReflectiveInjector } from "injection-js";
 import { Config } from "../config2.js";
 
@@ -132,12 +133,13 @@ export class RpfGenerator {
     );
     // var dist = Math.sqrt(dx * dx + dy * dy);
     var probeSpeed = this.config.probeSpeed;
+    var probeZSpeed=20;
     function GenCNC() {
       return po
         .map((o) => {
-          return `G0 Z5
+          return `G1 Z5 F${probeSpeed}
 G1 X${fmt( o.x)} Y${fmt(o.y)} F${probeSpeed}
-G31 Z-1 F50`;
+G31 Z-1 F20`;
         })
         .join("\n");
     }
@@ -148,17 +150,17 @@ M0 (Attach probe wires and clips that need attaching)
 
 G1 X${po[0].x} Y${po[0].y} F${probeSpeed} (Move to bottom left corner)
 
-G31 Z-99 F50 (Probe to a maximum of the specified probe height at the specified feed rate)
+G31 Z-99 F20 (Probe to a maximum of the specified probe height at the specified feed rate)
 G92 Z0 (Touch off Z to 0 once contact is made)
-G0 Z2 (Move Z to above the contact point)
-G31 Z-1 F25 (Repeat at a more accurate slower rate)
+G1 Z2 F${probeSpeed} (Move Z to above the contact point)
+G31 Z-1 F20 (Repeat at a more accurate slower rate)
 G92 Z0
-G0 Z5
+G1 Z5 F${probeSpeed}
 
 
 M40 (Begins a probe log file, when the window appears, enter a name for the log file such as "RawProbeLog.txt")
 ${str}
-G0 Z5
+G1 Z5 F${probeSpeed}
 
 
 M41 (Closes the opened log file)
@@ -166,9 +168,69 @@ G0 X0 Y0 Z5
 M0 (Detach any clips used for probing)
 M30
 `;
+var waitMoving=
+  `
+While (IsMoving())
+  Sleep(100)
+Wend
+`
+var saveCoord=`
+xd00d=getoemdro (800)
+yd00d=getoemdro (801)
+zd00d=getoemdro (802)
+
+'write some example text to the file
+Print #iFileNo,  xd00d, ",",yd00d,",",zd00d
+`
+
     console.info("Generate file ...");
     fs.writeFileSync("./rpf.nc", out);
+    var txtFile=path.resolve("./rpfmap.txt");
+    function GenScripts() {
+      return po
+        .map((o) => {
+          return `
+          CODE "G0 Z5"
+          ${waitMoving}
+CODE "G1 X${fmt( o.x)} Y${fmt(o.y)} F${probeSpeed}"
+${waitMoving}
+CODE "G31 Z-1 F20"
+${waitMoving}
+${saveCoord}
+`;
+        })
+        .join("\n");
+    }
+    out=`
+    MsgBox ( "Press enter any key to start" )
+
+    CODE "G90 G21 S20000 G17"
+    CODE "G1 X${po[0].x} Y${po[0].y} F${probeSpeed}"
+   ${waitMoving}
+    CODE "G31 Z-99 F20"
+    ${waitMoving}
+    CODE "G92 Z0"
+    CODE "G0 Z2"
+    ${waitMoving}
+    CODE "G31 Z-1 F20"
+    ${waitMoving}
+    CODE "G92 Z0"
+    CODE "G0 Z5"
+    ${waitMoving}
+    Dim sFileText As String
+    Dim iFileNo As Integer
+    iFileNo = FreeFile
+    'open the file for writing
+    Open "${txtFile}" For Output As #iFileNo
+    'please note, if this file already exists it will be overwritten!
+    
+   ${GenScripts()}
+    
+    'close the file (if you dont do this, you wont be able to open it again!)
+    Close #iFileNo
+        `
     //   console.log(appendZ);
+    fs.writeFileSync("./rpf.m1s", out);
   }
 }
 // var RpfGenerator = di.Class({
