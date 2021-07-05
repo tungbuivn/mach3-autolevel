@@ -57,10 +57,11 @@ export class GCode {
       .filter((o) => o != "")
       .reduce((a, b) => {
         var c = b + " ";
-        if ((lastCommand!="") && (c.match(/^[XY]/gi))) {
+        if ((lastCommand!="") && c.trim()!="" && (c.match(/^[XYZ]/gi))) {
           c=lastCommand+" "+c;
+          // console.log(c);
         }
-        if (!c.match(/F/) && lastFeed!="") {
+        if (!c.match(/F/) && c.match(/^[GXYZ]/gi) && lastFeed!="") {
           c=c+" "+lastFeed;
         }
         var xyz = {};

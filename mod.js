@@ -21,6 +21,46 @@ var prevIsZ5 = false;
 // d:\0cnc\app\top.nc
 var str = fs.readFileSync(file) + "";
 var gdata=gcode.loadFromStr(str);
+var zClearance=gdata.max.z;
+var reMax=new RegExp(`Z${zClearance}`,"gi");
+var lines= gdata.data.map(o=>{
+  o.rep=[o.ord];
+  return o;
+})
+
+.map((o,i)=>{
+  
+  if (o.z==zClearance) {
+    if (o.ord.match(/G43/i)) {
+
+    } else if (o.ord.match(/^[GXYZ]/i)) {
+      str=(" " +o.ord.replace(/^G.[^\s]*/i,"G0")+" ").replace(/\sF.[^\s]*/,"").trim();
+      o.rep=[str,o.ord]
+      // var obj=gdata.data[i+1];
+      // if (obj && obj.z==zClearance) {
+      //   str=(" " +obj.ord.replace(/^G.[^\s]*/i,"G0")+" ").replace(/\sF.[^\s]*/,"").trim();
+      //   obj.rep=[str].concat(obj.rep); 
+      // //   str=(" " +obj.ord.replace(/^G.[^\s]*/i,"G0")+" ").replace(/\sF.[^\s]*/,"").trim();
+      // //   obj.rep=[str]
+      // //   arr.push(str,"F100");
+      // //   var str=gdata.data[i+2];
+      // //   if (str) {
+
+      // //   }
+      // }
+    }
+  } else if (o.z>=1) {
+    var obj=gdata.data[i-1];
+    if (obj && obj.z==5) {
+      str=(" " +o.ord.replace(/^G.[^\s]*/i,"G0")+" ").replace(/\sF.[^\s]*/,"").trim();
+      o.rep=[str,o.ord]
+    }
+  }
+  
+  return o;
+})
+fs.writeFileSync(path.dirname(file) + "/out.nc", [].concat(...lines.map(o=>o.rep)).join("\n"));
+process.exit(0);
 var org = gdata.data.map(o=>o.ord);//str.split("\n");
 // console.log(org)
 var maxHeight = org

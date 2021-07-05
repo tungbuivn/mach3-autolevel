@@ -44,10 +44,10 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "Launch Program",
+      "name": "Launch mod",
       "skipFiles": ["<node_internals>/**"],
       "program": "${workspaceFolder}\\mod.js",
-      "args": ["D:/0cnc/app/z200.tap"]
+      "args": ["d:/0cnc/app/__tests__/data/fusion-360.tap"]
     }
   ]
 }
