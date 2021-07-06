@@ -97,7 +97,7 @@ isolate bottom_layer -dia ${bottomLayerToolDiameter} -overlap ${
         bottomLayerToolDiameter / 3
       } -passes ${bottomLayerMillingCount} -combine 1 -outname bottom_layer_iso
 cncjob bottom_layer_iso -z_cut -0.1 -z_move ${zSafe} -feedrate ${bottomLayerFeedRate} -tooldia ${bottomLayerToolDiameter} -spindlespeed ${spindleSpeed} -multidepth false -depthperpass 0.1 -outname bottom_layer_cnc
-write_gcode bottom_layer_cnc ${dir}/bottom_layer.cnc
+write_gcode bottom_layer_cnc ${dir}/bottom_layer.nc
 #> [-box <nameOfBox> | -dist <number>]
 
 ${hole.splitHoles(fileList.filter((o) => o.match(/_PTH\.DRL/i))[0])}
@@ -110,12 +110,12 @@ delete cutout_iso
 geocutout cutout_iso_exterior -dia ${cutoutToolDiameter} -gapsize 0.15 -gaps 4 
 cncjob cutout_iso_exterior -z_cut ${cutoutDepth} -z_move ${zSafe} -feedrate ${cutoutFeedRate} -tooldia ${cutoutToolDiameter} -spindlespeed ${spindleSpeed} -multidepth true -depthperpass ${cutoutDepthPerpass} -outname cutout_cnc
 #cncjob <str> [-z_cut <float>] [-z_move <float>] [-feedrate <float>] [-tooldia <float>] [-spindlespeed <int>] [-multidepth <bool>] [-depthperpass <float>] [-outname <str>]
-write_gcode cutout_cnc ${dir}/cutout.cnc
+write_gcode cutout_cnc ${dir}/cutout.nc
 
 #merge all geometry to autoleveller
 #join_geometries all bottom_layer_iso drill cutout_iso_exterior 
 #cncjob all -z_cut ${cutoutDepth} -z_move ${zSafe} -feedrate ${cutoutFeedRate} -tooldia ${cutoutToolDiameter} -spindlespeed ${spindleSpeed} -multidepth true -depthperpass ${cutoutDepthPerpass} -outname all_cnc
-#write_gcode all_cnc ${dir}/all.cnc
+#write_gcode all_cnc ${dir}/all.nc
 `;
     }
     var outScript = `${dir}/script.txt`;
@@ -123,6 +123,7 @@ write_gcode cutout_cnc ${dir}/cutout.cnc
     spawn(`C:/Program Files (x86)/FlatCAM/FlatCAM.exe`, [
       `--shellfile=${outScript}`,
     ]);
+    // spawn('../genrpf.js',['./cutout.nc'])
   }
 }
 // /**

@@ -148,7 +148,7 @@ G31 Z-1 F20`;
 M0 (Attach probe wires and clips that need attaching)
 (Initialize probe routine)
 
-G1 X${po[0].x} Y${po[0].y} F${probeSpeed} (Move to bottom left corner)
+
 
 G31 Z-99 F20 (Probe to a maximum of the specified probe height at the specified feed rate)
 G92 Z0 (Touch off Z to 0 once contact is made)
@@ -231,6 +231,15 @@ ${saveCoord}
         `
     //   console.log(appendZ);
     fs.writeFileSync("./rpf.m1s", out);
+
+    function GenLsp() {
+      return po
+        .map((o) => {
+          return `"${fmt( o.x)},${fmt(o.y)}"`;
+        })
+        .join(" ");
+    }
+    fs.writeFileSync("./lsprpf.lsp", `(command "pline" ${GenLsp()} "")`);
   }
 }
 // var RpfGenerator = di.Class({
