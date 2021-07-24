@@ -131,13 +131,15 @@ export class RpfGenerator {
         return ar;
       })
     );
+    console.log("Min:",gdata.min)
+    console.log("Max:",gdata.max)
     // var dist = Math.sqrt(dx * dx + dy * dy);
     var probeSpeed = this.config.probeSpeed;
     var probeZSpeed=20;
     function GenCNC() {
       return po
         .map((o) => {
-          return `G1 Z5 F${probeSpeed}
+          return `G1 Z3 F${probeSpeed}
 G1 X${fmt( o.x)} Y${fmt(o.y)} F${probeSpeed}
 G31 Z-1 F20`;
         })
@@ -152,7 +154,7 @@ M0 (Attach probe wires and clips that need attaching)
 
 G31 Z-99 F20 (Probe to a maximum of the specified probe height at the specified feed rate)
 G92 Z0 (Touch off Z to 0 once contact is made)
-G1 Z2 F${probeSpeed} (Move Z to above the contact point)
+G1 Z3 F${probeSpeed} (Move Z to above the contact point)
 G31 Z-1 F20 (Repeat at a more accurate slower rate)
 G92 Z0
 G1 Z5 F${probeSpeed}

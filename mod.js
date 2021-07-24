@@ -29,13 +29,26 @@ var lines= gdata.data.map(o=>{
 })
 
 .map((o,i)=>{
-  
-  if (o.z==zClearance) {
-    if (o.ord.match(/G43/i)) {
+  if (o.ord.match(/G43/i)) {
+    return o;
+  }
+  if (o.ord.match(reMax) && o.z==zClearance) {
+    
 
-    } else if (o.ord.match(/^[GXYZ]/i)) {
+    if (o.ord.match(/^[GXYZ]/i)) {
       str=(" " +o.ord.replace(/^G.[^\s]*/i,"G0")+" ").replace(/\sF.[^\s]*/,"").trim();
       o.rep=[str,o.ord]
+      var obj=gdata.data[i+1]
+      if (obj  && obj.ord.match(/^[GXYZ]/i)) {
+        str=(" " +obj.ord.replace(/^G.[^\s]*/i,"G0")+" ").replace(/\sF.[^\s]*/,"").trim();
+        obj.rep=[str].concat(obj.rep);
+
+        var obj=gdata.data[i+2]
+        if (obj  && obj.ord.match(/^[GXYZ]/i)) {
+          str=(" " +obj.ord.replace(/^G.[^\s]*/i,"G0")+" ").replace(/\sF.[^\s]*/,"").trim();
+          obj.rep=[str].concat(obj.rep);
+        }
+      }
       // var obj=gdata.data[i+1];
       // if (obj && obj.z==zClearance) {
       //   str=(" " +obj.ord.replace(/^G.[^\s]*/i,"G0")+" ").replace(/\sF.[^\s]*/,"").trim();
@@ -49,13 +62,7 @@ var lines= gdata.data.map(o=>{
       // //   }
       // }
     }
-  } else if (o.z>=1) {
-    var obj=gdata.data[i-1];
-    if (obj && obj.z==5) {
-      str=(" " +o.ord.replace(/^G.[^\s]*/i,"G0")+" ").replace(/\sF.[^\s]*/,"").trim();
-      o.rep=[str,o.ord]
-    }
-  }
+  } 
   
   return o;
 })

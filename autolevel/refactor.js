@@ -284,8 +284,8 @@ G90 G21 S20000 G17
 
 M0 (Attach probe wires and clips that need attaching)
 (Initialize probe routine)
-G1 X${tri.min.x} Y${tri.min.y} F1000 (Move to bottom left corner)
-G31 Z-100 F50 (Probe to a maximum of the specified probe height at the specified feed rate)
+(Nop G1 X${tri.min.x} Y${tri.min.y} F1000 Move to bottom left corner)
+G31 Z-100 F20 (Probe to a maximum of the specified probe height at the specified feed rate)
 G92 Z0 (Touch off Z to 0 once contact is made)
 G0 Z5
 M0 (Detach any clips used for probing)

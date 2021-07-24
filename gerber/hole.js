@@ -117,7 +117,7 @@ drillcncjob drill -tools ${ss.first
         .join()} -drillz ${config.drillDepth} -travelz 2 -feedrate ${
         config.drillFeedRate
       } -spindlespeed ${config.spindleSpeed} -outname drill_cnc
-write_gcode drill_cnc ${files.dir}/drill.cnc
+write_gcode drill_cnc ${files.dir}/drill.nc
 
       `);
     }
@@ -133,7 +133,7 @@ cncjob drill_mill_geo -z_cut -2 -z_move 2 -feedrate 50 -tooldia ${
       } -spindlespeed ${config.spindleSpeed} -multidepth true -depthperpass ${
         config.bottomLayerMillingDepth
       } -outname drill_mill_cnc      
-write_gcode drill_mill_cnc ${files.dir}/drill_mill.cnc
+write_gcode drill_mill_cnc ${files.dir}/drill_mill.nc
 
       `);
     }
