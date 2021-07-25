@@ -23,6 +23,8 @@ var str = fs.readFileSync(file) + "";
 var gdata=gcode.loadFromStr(str);
 var zClearance=gdata.max.z;
 var reMax=new RegExp(`Z${zClearance}`,"gi");
+console.log("Clearange: ",zClearance)
+var zFetch=50;
 var lines= gdata.data.map(o=>{
   o.rep=[o.ord];
   return o;
@@ -43,11 +45,14 @@ var lines= gdata.data.map(o=>{
         str=(" " +obj.ord.replace(/^G.[^\s]*/i,"G0")+" ").replace(/\sF.[^\s]*/,"").trim();
         obj.rep=[str].concat(obj.rep);
 
-        var obj=gdata.data[i+2]
-        if (obj  && obj.ord.match(/^[GXYZ]/i)) {
-          str=(" " +obj.ord.replace(/^G.[^\s]*/i,"G0")+" ").replace(/\sF.[^\s]*/,"").trim();
-          obj.rep=[str].concat(obj.rep);
-        }
+        // var obj=gdata.data[i+2]
+        // // console.log(obj.ord)
+        // if (obj  && obj.ord.match(/^[G]/i) && obj.ord.match(/[Z]/i)) {
+        //   // console.log("found:",obj.ord)
+        //   str=(" " +obj.ord+" ").replace(/\sF.[^\s]*/,"").trim();
+        //   str=str+ " F50";
+        //   obj.rep=[str].concat(obj.rep);
+        // }
       }
       // var obj=gdata.data[i+1];
       // if (obj && obj.z==zClearance) {
@@ -61,6 +66,14 @@ var lines= gdata.data.map(o=>{
 
       // //   }
       // }
+    }
+  } else {
+    var obj=gdata.data[i]
+    if (obj  && obj.ord.match(/^G0?1/i) && obj.ord.match(/[Z]/i)) {
+      console.log("found:",obj.ord)
+      str=(" " +obj.ord+" ").replace(/\sF.[^\s]*/,"").trim();
+      str=str+ " F50";
+      obj.rep=[str].concat(obj.rep);
     }
   } 
   
