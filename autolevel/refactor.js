@@ -122,7 +122,10 @@ export class RefactorHeightMap {
 
           var spl;
           if (type == 1) {
-            spl = splitSegment(last, y, ...lines).map((o) => {
+            // console.log(y);
+            spl = splitSegment(last, y, ...lines).map((o,i) => {
+            
+              o.feed=y.feed;
               o.idx = y.idx;
               return o;
             });
@@ -138,6 +141,7 @@ export class RefactorHeightMap {
             );
             if (spl.length > 1) {
               spl = spl.map((o) => {
+                o.feed=y.feed;
                 o.comment = "              ;auto split arc";
                 return o;
               });
@@ -224,7 +228,7 @@ export class RefactorHeightMap {
           }
           return o;
         }
-
+// console.log(o)
         o.ord = `G01 X${fmt(o.x)} Y${fmt(o.y)} Z${fmt(o.z)}`;
 
         return o;
@@ -266,6 +270,9 @@ export class RefactorHeightMap {
         }
         o.update = po.join(" ").replace(/\s+/g, " ");
       }
+      // console.log(o)
+      // var up=`${o.update}`.split(" ").filter(o=>!o.match(/F/i)).join(" ")+` ${o.feed}`;
+      
       o.update = `${o.update}${o.comment || ""}`;
       return o;
     });

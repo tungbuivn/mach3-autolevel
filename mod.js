@@ -79,7 +79,10 @@ var lines= gdata.data.map(o=>{
   
   return o;
 })
-fs.writeFileSync(path.dirname(file) + "/out.nc", [].concat(...lines.map(o=>o.rep)).join("\n"));
+var dir = path.dirname(file).replace(/\\/gi, "/");
+var file = path.basename(file);
+var outFile = `${dir}/zmod-${file}`;
+fs.writeFileSync(outFile, [].concat(...lines.map(o=>o.rep)).join("\n"));
 process.exit(0);
 var org = gdata.data.map(o=>o.ord);//str.split("\n");
 // console.log(org)

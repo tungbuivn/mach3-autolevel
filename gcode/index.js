@@ -52,6 +52,7 @@ export class GCode {
     var mi = { x: 1e6, y: 1e6, z: 1e6 },
       ma = { x: -1e6, y: -1e6, z: -1e6 };
     var ct = gcodedata.data.map((o) => o.ord);
+    var lastFeedCommand=undefined;
     var appendZ = ct
       .filter((o) => !o.match(/^\(/))
       .filter((o) => o != "")
@@ -61,9 +62,12 @@ export class GCode {
           c=lastCommand+" "+c;
           // console.log(c);
         }
-        if (!c.match(/F/) && c.match(/^[GXYZ]/gi) && lastFeed!="") {
-          c=c+" "+lastFeed;
+        if (c.match(/^F/i)) {
+          lastFeedCommand=c;
         }
+        // if (!c.match(/F/) && c.match(/^[GXYZ]/gi) && lastFeed!="") {
+        //   c=c+" "+lastFeed;
+        // }
         var xyz = {};
         c = c
           .replace(/([XYZIJR])/gi, " $1")
@@ -129,13 +133,24 @@ export class GCode {
           y: Math.max(ma.y, xyz.y || -1e6),
           z: Math.max(ma.z, xyz.z || -1e6),
         };
+        if (c.match(/\sF/i)) {
+          xyz.feed=c.split(/\s/gi).filter(o=>o.match(/^F/gi))[0];
+          
+        } else {
+          if (lastFeedCommand) {
+            xyz.feed=lastFeedCommand;
+          }
+        }
+        
         a.push(Object.assign({ ord: c }, xyz));
         if (c.match(/^G/i)) {
           lastCommand=c.split(/\s/)[0];
         }
         if (c.match(/\sF/i)) {
           lastFeed=c.split(/\s/gi).filter(o=>o.match(/^F/gi))[0];
+          
         }
+       
         
         return a;
       }, []);

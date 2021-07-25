@@ -128,7 +128,7 @@ write_gcode drill_cnc ${files.dir}/drill.nc
 millholes drill -tools ${ss.second
         .map((o, i) => parseInt(o.id.id))
         .join()} -tooldia ${config.drillToolDiameter} -outname drill_mill_geo
-cncjob drill_mill_geo -z_cut -2 -z_move 2 -feedrate 50 -tooldia ${
+cncjob drill_mill_geo -z_cut -2 -z_move 2 -feedrate ${config.drillFeedRate} -tooldia ${
         config.drillToolDiameter
       } -spindlespeed ${config.spindleSpeed} -multidepth true -depthperpass ${
         config.bottomLayerMillingDepth
