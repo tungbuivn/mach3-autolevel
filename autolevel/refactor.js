@@ -222,13 +222,7 @@ export class RefactorHeightMap {
               var it = resolveHeight(o, tr[0], tr[1], tr[2]);
              
               if (it != null) {
-                if (it.z>10) {
-                  var ___=true;
-                }
                 o.tri = [tr[0], tr[1], tr[2]];
-                if (o.resolvedZ>10)  {
-                  console.log("error mapping");
-                }
                 o.resolvedZ = it.z;
                 break;
               }
