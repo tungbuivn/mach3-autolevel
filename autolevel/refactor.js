@@ -218,9 +218,17 @@ export class RefactorHeightMap {
         if (o.ord) {
           if (typeof o.resolvedZ == "undefined" && !isNaN(o.x) && !isNaN(o.y)) {
             for (var tr of tri.triangles) {
+             
               var it = resolveHeight(o, tr[0], tr[1], tr[2]);
+             
               if (it != null) {
+                if (it.z>10) {
+                  var ___=true;
+                }
                 o.tri = [tr[0], tr[1], tr[2]];
+                if (o.resolvedZ>10)  {
+                  console.log("error mapping");
+                }
                 o.resolvedZ = it.z;
                 break;
               }
@@ -228,13 +236,17 @@ export class RefactorHeightMap {
           }
           return o;
         }
-// console.log(o)
+       
+
         o.ord = `G01 X${fmt(o.x)} Y${fmt(o.y)} Z${fmt(o.z)}`;
 
         return o;
       });
     // map height
-    joinData = joinData.map((o) => {
+    joinData = joinData.map((o,i) => {
+     if (i==57) {
+       console.log("pause")
+     }
       o.ord = o.ord.replace(/([XYZ])/gi, " $1");
       o.update = o.ord.replace(/\s+/g, " ");
       if (isNaN(o.z)) {
@@ -272,8 +284,9 @@ export class RefactorHeightMap {
       }
       // console.log(o)
       // var up=`${o.update}`.split(" ").filter(o=>!o.match(/F/i)).join(" ")+` ${o.feed}`;
-      
+     
       o.update = `${o.update}${o.comment || ""}`;
+     
       return o;
     });
     var dir = path.dirname(gcodeFile).replace(/\\/gi, "/");

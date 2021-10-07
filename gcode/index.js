@@ -65,7 +65,7 @@ export class GCode {
         if (c.match(/^F/i)) {
           lastFeedCommand=c;
         }
-        // if (!c.match(/F/) && c.match(/^[GXYZ]/gi) && lastFeed!="") {
+        // if (c.match(/F/) && c.match(/^[GXYZ]/gi) && lastFeed!="") {
         //   c=c+" "+lastFeed;
         // }
         var xyz = {};

@@ -19,8 +19,8 @@
       "request": "launch",
       "skipFiles": ["<node_internals>/**"],
       "type": "node",
-      "cwd": "${workspaceFolder}/__tests__/data",
-      "args": ["bottom.nc", "height.txt"]
+      "cwd": "c:/Users/tungbt/Downloads/Gerber_PCB_Repair",
+      "args": ["bottom_layer.nc", "mapfile"]
     },
     {
       "name": "Launch GER",

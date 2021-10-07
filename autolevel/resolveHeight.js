@@ -31,7 +31,7 @@ function findLinePlaneIntersectionCoords(px, py, pz, qx, qy, qz, a, b, c, d) {
     z: pz + t * (qz - pz),
   };
 }
-function pointInTriangle(point, triangle) {
+function xxxxpointInTriangle(point, triangle) {
   //compute vectors & dot products
   var cx = point[0],
     cy = point[1],
@@ -57,15 +57,30 @@ function pointInTriangle(point, triangle) {
     v = (dot00 * dot12 - dot01 * dot02) * inv;
   return u >= 0 && v >= 0 && u + v <= 1;
 }
+function sign ( p1,  p2,  p3)
+{
+    return (p1.x - p3.x) * (p2.y - p3.y) - (p2.x - p3.x) * (p1.y - p3.y);
+}
+
+function PointInTriangle ( pt,  v1,  v2,  v3)
+{
+    var d1, d2, d3;
+    var has_neg, has_pos;
+
+    d1 = sign(pt, v1, v2);
+    d2 = sign(pt, v2, v3);
+    d3 = sign(pt, v3, v1);
+
+    has_neg = (d1 < 0) || (d2 < 0) || (d3 < 0);
+    has_pos = (d1 > 0) || (d2 > 0) || (d3 > 0);
+
+    return !(has_neg && has_pos);
+}
 
 export function resolveHeight(p, a, b, c) {
-  var inTri = pointInTriangle(
-    [p.x, p.y],
-    [
-      [a.x, a.y],
-      [b.x, b.y],
-      [c.x, c.y],
-    ]
+  var inTri = PointInTriangle(
+    p,
+    a,b,c
   );
   if (!inTri) {
     // var inTri = MathFunctions2.triangleContainsPoint(a, b, c, p);

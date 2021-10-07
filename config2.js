@@ -4,10 +4,10 @@ const drillToolDiameter = 0.6;
 const drillFeedRate = 50;
 const drillDepth = -1.8;
 
-const bottomLayerFeedRate = 600;
+const bottomLayerFeedRate = 400;
 const bottomLayerMillingDepth = 0.1;
 const bottomLayerMillingCount = 4;
-const bottomLayerToolDiameter = 0.3;
+const bottomLayerToolDiameter = 0.27;
 
 const cutoutDepth = -2;
 const cutoutDepthPerpass = 0.5;

@@ -73,7 +73,7 @@ var lines= gdata.data.map(o=>{
       console.log("found:",obj.ord)
       str=(" " +obj.ord+" ").replace(/\sF.[^\s]*/,"").trim();
       str=str+ " F50";
-      obj.rep=[str].concat(obj.rep);
+      obj.rep=[str].concat(obj.rep,[obj.feed]);
     }
   } 
   
