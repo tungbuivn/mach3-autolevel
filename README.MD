@@ -12,7 +12,7 @@ npm install -g mach3-pcb-autoleveller
 + gerber file which exported from easyeda
 + flatcam version 8.5
 + only support milling bottom layer of the pcb by mirror content of pcb throungt y axis, milling the top layer done by manual
-+ a knife milling pcb 0.1mm, a milling knife flat 0.6mm, a milling knife flat 1.5mm
++ a knife milling pcb 0.1mm, 60deg, a milling knife flat 0.6mm, a milling knife flat 1.5mm
 + you are a programer or atleat you know how to install nodejs and using commandline :D
 
 ## How to use ?
