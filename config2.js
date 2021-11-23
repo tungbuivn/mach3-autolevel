@@ -1,6 +1,7 @@
 const zSafe = 5;
 
 const drillToolDiameter = 0.6;
+const drillMillToolDiameter=0.98;
 const drillFeedRate = 50;
 const drillDepth = -1.8;
 
@@ -21,6 +22,7 @@ export class Config {
   constructor() {
     this.zSafe = zSafe;
     this.drillToolDiameter = drillToolDiameter;
+    this.drillMillToolDiameter = drillMillToolDiameter;
     this.drillFeedRate = drillFeedRate;
     this.drillDepth = drillDepth;
     this.bottomLayerFeedRate = bottomLayerFeedRate;

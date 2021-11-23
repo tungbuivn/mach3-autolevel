@@ -96,9 +96,12 @@ ${footers.join("\n")}
       if (b.id.size < 1) {
         a.first = a.first || [];
         a.first.push(b);
-      } else {
+      } else if ((b.id.size>=1)&&(b.id.size<=1.1)){
         a.second = a.second || [];
         a.second.push(b);
+      } else {
+        a.third = a.third || [];
+        a.third.push(b);
       }
       return a;
     }, {});
@@ -121,15 +124,28 @@ write_gcode drill_cnc ${files.dir}/drill.nc
 
       `);
     }
-
     if (ss.second) {
+      scripts.push(`# drill holes =1mm
+
+drillcncjob drill -tools ${ss.second
+        .map((o, i) => parseInt(o.id.id))
+        .join()} -drillz ${config.drillDepth} -travelz 2 -feedrate ${
+        config.drillFeedRate
+      } -spindlespeed ${config.spindleSpeed} -outname drill_cnc
+write_gcode drill_cnc ${files.dir}/drill_1mm.nc
+
+      `);
+    }
+
+    // milling hole
+    if (ss.third) {
       // generateDrillFile(ss.second, fname);
       scripts.push(`# milling holes
-millholes drill -tools ${ss.second
+millholes drill -tools ${ss.third
         .map((o, i) => parseInt(o.id.id))
-        .join()} -tooldia ${config.drillToolDiameter} -outname drill_mill_geo
+        .join()} -tooldia ${config.drillMillToolDiameter} -outname drill_mill_geo
 cncjob drill_mill_geo -z_cut -2 -z_move 2 -feedrate ${config.drillFeedRate} -tooldia ${
-        config.drillToolDiameter
+        config.drillMillToolDiameter
       } -spindlespeed ${config.spindleSpeed} -multidepth true -depthperpass ${
         config.bottomLayerMillingDepth
       } -outname drill_mill_cnc      
