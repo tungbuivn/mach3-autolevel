@@ -1341,6 +1341,7 @@ function onCircular(clockwise, cx, cy, cz, x, y, z, feed) {
           var len2d = angv * r;
           var zh = z - start.z;
           var len = Math.sqrt(len2d * len2d + zh * zh);
+          // resolution arc
           var dlen = 0.05;
           if (dlen > len) {
             dlen = len / 10;
