@@ -23,6 +23,7 @@ var str = fs.readFileSync(file) + "";
 var gdata=gcode.loadFromStr(str);
 var zClearance=gdata.max.z;
 var reMax=new RegExp(`Z${zClearance}`,"gi");
+
 console.log("Clearange: ",zClearance)
 var zFetch=50;
 var lines= gdata.data.map(o=>{

@@ -1,6 +1,6 @@
 {
   "name": "mach3-pcb-autoleveller",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "",
   "main": "index.js",
   "type": "module",
@@ -28,7 +28,8 @@
     "fixout": "./fixout.js",
     "bed": "./bed.js",
     "rpf": "./rpf.js",
-    "rpfmap": "./rpfmap.js"
+    "rpfmap": "./rpfmap.js",
+    "mapall": "./mapall.js"
   },
   "devDependencies": {
     "@babel/core": "^7.14.6",

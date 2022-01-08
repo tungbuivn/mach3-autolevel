@@ -12,7 +12,7 @@ npm install -g mach3-pcb-autoleveller
 + gerber file which exported from easyeda
 + flatcam version 8.5
 + only support milling bottom layer of the pcb by mirror content of pcb throungt y axis, milling the top layer done by manual
-+ a knife milling pcb 0.1mm, 60deg, a milling knife flat 0.6mm, a milling knife flat 1.5mm
++ a knife milling pcb 0.1mm, 60deg, a milling knife flat 0.6mm,a milling knife flat 0.8mm,a milling knife flat 0.1mm, a milling knife flat 1.5mm
 + you are a programer or atleat you know how to install nodejs and using commandline :D
 
 ## How to use ?
@@ -25,7 +25,9 @@ npm install -g mach3-pcb-autoleveller
 * return to console and run following commands:
 ** rpfmap bottom_layer.nc mapfile
 ** rpfmap cutout.nc mapfile
-** rpfmap drill.nc mapfile
+** rpfmap drill.nc mapfile (knife 0.6mm)
+** rpfmap drill_1mm.nc mapfile (knife 0.8mm)
+** rpfmap drill_mill.nc mapfile (knife 0.8mm)
 after that you will have 3 file: almod-bottom_layer.nc contain bottom layer of pcb, almod-drill.nc contains drilling hole of pcb and almod-cutout.nc will cutout pcb. Every height of every point in the g-code will be recalculating by adding distance from height-map file to the XY plane.
 
 Note: remember to replace knife to 0.6mm before running file drill.nc
