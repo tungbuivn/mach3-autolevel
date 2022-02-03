@@ -1,5 +1,5 @@
 import * as fs from "fs";
-import path from 'path';
+import path from "path";
 import { Inject, Injectable, ReflectiveInjector } from "injection-js";
 import { Config } from "../config2.js";
 
@@ -96,6 +96,10 @@ export class RpfGenerator {
       dy = ma.y - mi.y,
       countSegX = Math.floor(dx / 10),
       countSegY = Math.floor(dy / 10);
+    mi.x = mi.x - 1;
+    mi.y = mi.y - 1;
+    ma.x = ma.x + 1;
+    ma.y = ma.y + 1;
     if (countSegX == 0) countSegX = 1;
     if (countSegY == 0) countSegY = 1;
 
@@ -124,23 +128,23 @@ export class RpfGenerator {
             );
           })
         );
-        
+
         if ((j + 1) % 2 == 0) {
           ar.reverse();
         }
         return ar;
       })
     );
-    console.log("Min:",gdata.min)
-    console.log("Max:",gdata.max)
+    console.log("Min:", mi);
+    console.log("Max:", ma);
     // var dist = Math.sqrt(dx * dx + dy * dy);
     var probeSpeed = this.config.probeSpeed;
-    var probeZSpeed=20;
+    var probeZSpeed = 20;
     function GenCNC() {
       return po
         .map((o) => {
           return `G1 Z3 F${probeSpeed}
-G1 X${fmt( o.x)} Y${fmt(o.y)} F${probeSpeed}
+G1 X${fmt(o.x)} Y${fmt(o.y)} F${probeSpeed}
 G31 Z-1 F20`;
         })
         .join("\n");
@@ -170,31 +174,30 @@ G0 X0 Y0 Z5
 M0 (Detach any clips used for probing)
 M30
 `;
-var waitMoving=
-  `
+    var waitMoving = `
 While (IsMoving())
   Sleep(100)
 Wend
-`
-var saveCoord=`
+`;
+    var saveCoord = `
 xd00d=getoemdro (800)
 yd00d=getoemdro (801)
 zd00d=getoemdro (802)
 
 'write some example text to the file
 Print #iFileNo,  xd00d, ",",yd00d,",",zd00d
-`
+`;
 
     console.info("Generate file ...");
     fs.writeFileSync("./rpf.nc", out);
-    var txtFile=path.resolve("./rpfmap.txt");
+    var txtFile = path.resolve("./rpfmap.txt");
     function GenScripts() {
       return po
         .map((o) => {
           return `
           CODE "G0 Z5"
           ${waitMoving}
-CODE "G1 X${fmt( o.x)} Y${fmt(o.y)} F${probeSpeed}"
+CODE "G1 X${fmt(o.x)} Y${fmt(o.y)} F${probeSpeed}"
 ${waitMoving}
 CODE "G31 Z-1 F20"
 ${waitMoving}
@@ -203,7 +206,7 @@ ${saveCoord}
         })
         .join("\n");
     }
-    out=`
+    out = `
     MsgBox ( "Press enter any key to start" )
 
     CODE "G90 G21 S20000 G17"
@@ -230,14 +233,14 @@ ${saveCoord}
     
     'close the file (if you dont do this, you wont be able to open it again!)
     Close #iFileNo
-        `
+        `;
     //   console.log(appendZ);
-    fs.writeFileSync("./rpf.m1s", out);
+    // fs.writeFileSync("./rpf.m1s", out);
 
     function GenLsp() {
       return po
         .map((o) => {
-          return `"${fmt( o.x)},${fmt(o.y)}"`;
+          return `"${fmt(o.x)},${fmt(o.y)}"`;
         })
         .join(" ");
     }

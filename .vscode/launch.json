@@ -26,7 +26,8 @@
       "name": "Launch GER",
       "program": "${workspaceFolder}/ger.js",
       "request": "launch",
-      "cwd": "${workspaceFolder}/../Gerber_PCB_sensor_2021-06-07",
+      "cwd":"d:\\downloads\\pcb_home",
+      //"cwd": "${workspaceFolder}/../Gerber_PCB_sensor_2021-06-07",
       "skipFiles": ["<node_internals>/**"],
       "type": "node"
     },

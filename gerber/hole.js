@@ -14,8 +14,10 @@ export class Hole {
      */
     this.config = config;
   }
-  splitHoles(filename) {
+  splitHoles(filename, skipMirror) {
     var { files, config } = this;
+    skipMirror = skipMirror || false;
+    var drillName = skipMirror ? "_top" : "";
     var content = fs.readFileSync(filename) + "";
     var lines = content
       .replace(/(?:\\[rn]|[\r\n]+)+/g, String.fromCharCode(0))
@@ -92,42 +94,42 @@ ${codes}
 ${footers.join("\n")}
       `;
     }
-    var ss = segs.map(a=>{
-      
-      a.id.size=parseFloat(a.id.size);
-      // console.log(a)
-      return a;
-    }).reduce((a, b) => {
-      if (b.id.size < 1) {
-        a.first = a.first || [];
-        a.first.push(b);
-      } else if ((b.id.size>=1)&&(b.id.size<=1.1)){
-        a.second = a.second || [];
-        a.second.push(b);
-      } else {
-        a.third = a.third || [];
-        a.third.push(b);
-      }
-      return a;
-    }, {});
-    console.log(JSON.stringify(ss))
-    var drill = files.get("_PTH");
-    var scripts = [
-      `open_excellon ${drill} -outname drill
-mirror drill -axis Y -box cutout`,
-    ];
+    var ss = segs
+      .map((a) => {
+        a.id.size = parseFloat(a.id.size);
+        // console.log(a)
+        return a;
+      })
+      .reduce((a, b) => {
+        if (b.id.size <= 2) {
+          a.first = a.first || [];
+          a.first.push(b);
+        } else if (b.id.size >= 1 && b.id.size <= 1.1) {
+          a.second = a.second || [];
+          a.second.push(b);
+        } else {
+          a.third = a.third || [];
+          a.third.push(b);
+        }
+        return a;
+      }, {});
+    console.log(JSON.stringify(ss));
+    var drill = files.get("DRL");
+    var scripts = [`open_excellon ${drill} -outname drill`];
+    if (!skipMirror) {
+      scripts.push(`mirror drill -axis Y -box cutout`);
+    }
     //   console.log(ss);
     if (ss.first) {
       // generateDrillFile(ss.first, `${fname}`);
-      var ins1=
-      `# drill holes
+      var ins1 = `# drill holes
 
 drillcncjob drill -tools ${ss.first
         .map((o, i) => parseInt(o.id.id))
         .join()} -drillz ${config.drillDepth} -travelz 2 -feedrate ${
         config.drillFeedRate
       } -spindlespeed ${config.spindleSpeed} -outname drill0-8_cnc
-write_gcode drill0-8_cnc ${files.dir}/drill.nc
+write_gcode drill0-8_cnc ${files.dir}/drill${drillName}.nc
 
       `;
       // console.log(ins1);
@@ -152,13 +154,17 @@ write_gcode drill1-0_cnc ${files.dir}/drill_1mm.nc
       scripts.push(`# milling holes
 millholes drill -tools ${ss.third
         .map((o, i) => parseInt(o.id.id))
-        .join()} -tooldia ${config.drillMillToolDiameter} -outname drill_mill_geo
-cncjob drill_mill_geo -z_cut -2 -z_move 2 -feedrate ${config.drillFeedRate} -tooldia ${
+        .join()} -tooldia ${
         config.drillMillToolDiameter
-      } -spindlespeed ${config.spindleSpeed} -multidepth true -depthperpass ${
+      } -outname drill_mill_geo
+cncjob drill_mill_geo -z_cut -2 -z_move 2 -feedrate ${
+        config.drillFeedRate
+      } -tooldia ${config.drillMillToolDiameter} -spindlespeed ${
+        config.spindleSpeed
+      } -multidepth true -depthperpass ${
         config.bottomLayerMillingDepth
       } -outname drill_mill_cnc      
-write_gcode drill_mill_cnc ${files.dir}/drill_mill.nc
+write_gcode drill_mill_cnc ${files.dir}/drill_mill${drillName}.nc
 
       `);
     }

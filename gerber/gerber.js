@@ -78,29 +78,35 @@ export class Gerber {
     // require("./hole")(fileList.filter((o) => o.match(/_PTH\.DRL/i))[0]);
     // process.exit(-1);
     function get(name) {
+      // console.log("geting name", fileList, dir, name);
       var re = new RegExp(name, "gi");
-      var fn = fileList.filter((e) => e.match(re))[0];
-      return path.join(dir, fn).replace(/\\/g, "/");
+      var fn = fileList.filter((e) => e.match(re));
+      if (fn.length == 0) {
+        throw new Error("Khong tim thay file !!!", name);
+      }
+      return path.join(dir, fn[0]).replace(/\\/g, "/");
     }
 
-    function applyTpl() {
+    function applyTpl(pos) {
       var boardOutline = get("BoardOutline");
       var bottomLayer = get("BottomLayer");
-      var drill = get("_PTH");
-      return `
+      var topLayer = get("TopLayer");
+      // var drill = get("_PTH");
+      return [
+        `
 set_sys "units" "MM"
 new
 open_gerber ${boardOutline} -outname cutout
 open_gerber ${bottomLayer} -outname bottom_layer
 mirror bottom_layer -axis Y -box cutout
 isolate bottom_layer -dia ${bottomLayerToolDiameter} -overlap ${
-        bottomLayerToolDiameter / 3
-      } -passes ${bottomLayerMillingCount} -combine 1 -outname bottom_layer_iso
+          bottomLayerToolDiameter / 3
+        } -passes ${bottomLayerMillingCount} -combine 1 -outname bottom_layer_iso
 cncjob bottom_layer_iso -z_cut -0.1 -z_move ${zSafe} -feedrate ${bottomLayerFeedRate} -tooldia ${bottomLayerToolDiameter} -spindlespeed ${spindleSpeed} -multidepth false -depthperpass 0.1 -outname bottom_layer_cnc
 write_gcode bottom_layer_cnc ${dir}/bottom_layer.nc
 #> [-box <nameOfBox> | -dist <number>]
 
-${hole.splitHoles(fileList.filter((o) => o.match(/_PTH\.DRL/i))[0])}
+${hole.splitHoles(fileList.filter((o) => o.match(/\.DRL/i))[0])}
 
 #cut board
 
@@ -116,10 +122,43 @@ write_gcode cutout_cnc ${dir}/cutout.nc
 #join_geometries all bottom_layer_iso drill cutout_iso_exterior 
 #cncjob all -z_cut ${cutoutDepth} -z_move ${zSafe} -feedrate ${cutoutFeedRate} -tooldia ${cutoutToolDiameter} -spindlespeed ${spindleSpeed} -multidepth true -depthperpass ${cutoutDepthPerpass} -outname all_cnc
 #write_gcode all_cnc ${dir}/all.nc
-`;
+`,
+        `
+
+#process top layer
+set_sys "units" "MM"
+new
+open_gerber ${boardOutline} -outname cutout-top
+open_gerber ${topLayer} -outname top_layer
+isolate top_layer -dia ${bottomLayerToolDiameter} -overlap ${
+          bottomLayerToolDiameter / 3
+        } -passes ${bottomLayerMillingCount} -combine 1 -outname top_layer_iso
+cncjob top_layer_iso -z_cut -0.1 -z_move ${zSafe} -feedrate ${bottomLayerFeedRate} -tooldia ${bottomLayerToolDiameter} -spindlespeed ${spindleSpeed} -multidepth false -depthperpass 0.1 -outname top_layer_cnc
+write_gcode top_layer_cnc ${dir}/top_layer.nc     
+
+${hole.splitHoles(fileList.filter((o) => o.match(/\.DRL/i))[0], true)} 
+
+
+#cut board
+
+isolate cutout-top -dia ${cutoutToolDiameter} -overlap 0.1 -combine 0 -outname cutout_top_iso
+exteriors cutout_top_iso -outname cutout_top_iso_exterior
+delete cutout_top_iso
+geocutout cutout_top_iso_exterior -dia ${cutoutToolDiameter} -gapsize 0.15 -gaps 4 
+cncjob cutout_top_iso_exterior -z_cut ${cutoutDepth} -z_move ${zSafe} -feedrate ${cutoutFeedRate} -tooldia ${cutoutToolDiameter} -spindlespeed ${spindleSpeed} -multidepth true -depthperpass ${cutoutDepthPerpass} -outname cutouttop_cnc
+#cncjob <str> [-z_cut <float>] [-z_move <float>] [-feedrate <float>] [-tooldia <float>] [-spindlespeed <int>] [-multidepth <bool>] [-depthperpass <float>] [-outname <str>]
+write_gcode cutouttop_cnc ${dir}/cutout_top.nc
+`,
+      ][pos];
     }
     var outScript = `${dir}/script.txt`;
-    fs.writeFileSync(outScript, applyTpl());
+    fs.writeFileSync(outScript, applyTpl(0));
+    spawn(`C:/Program Files (x86)/FlatCAM/FlatCAM.exe`, [
+      `--shellfile=${outScript}`,
+    ]);
+
+    outScript = `${dir}/script_top.txt`;
+    fs.writeFileSync(outScript, applyTpl(1));
     spawn(`C:/Program Files (x86)/FlatCAM/FlatCAM.exe`, [
       `--shellfile=${outScript}`,
     ]);

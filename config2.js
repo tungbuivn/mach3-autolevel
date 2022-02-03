@@ -1,19 +1,19 @@
 const zSafe = 5;
 
 const drillToolDiameter = 0.6;
-const drillMillToolDiameter=0.8;
+const drillMillToolDiameter = 0.8;
 const drillFeedRate = 50;
 const drillDepth = -1.8;
 
 const bottomLayerFeedRate = 300;
 const bottomLayerMillingDepth = 0.1;
 const bottomLayerMillingCount = 4;
-const bottomLayerToolDiameter = 0.25;
+const bottomLayerToolDiameter = 0.35;
 
 const cutoutDepth = -2;
-const cutoutDepthPerpass = 0.5;
-const cutoutFeedRate = 600;
-const cutoutToolDiameter = 1.5;
+const cutoutDepthPerpass = 0.3;
+const cutoutFeedRate = 400;
+const cutoutToolDiameter = 2.5;
 
 const spindleSpeed = 15000;
 const probeSpeed = 600;
